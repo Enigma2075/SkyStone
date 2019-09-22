@@ -10,8 +10,6 @@ public class DriveOp extends LinearOpMode {
     DcMotor rightDrive;
     DcMotor leftDrive;
 
-    CheesyDrive cheesyDrive;
-
     @Override
     public void runOpMode() throws InterruptedException {
         Robot robot = new Robot(hardwareMap, telemetry);
