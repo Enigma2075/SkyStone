@@ -34,11 +34,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -121,14 +123,45 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
 
                       // step through the list of recognitions and display boundary info.
                       int i = 0;
+
+                      Recognition skystoneRec = null;
+                      List<Recognition> stoneRecs = new ArrayList<Recognition>();
                       for (Recognition recognition : updatedRecognitions) {
+                          if(recognition.getLabel() == "Skystone") {
+                              skystoneRec = recognition;
+                          }
+                          else {
+                              stoneRecs.add(recognition);
+                          }
+
                         telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-                        telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+                          telemetry.addData(String.format("  height,conf (%d)", i), "%.03f , %.03f",
+                                  recognition.getHeight(), recognition.getConfidence());
+                          telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
                                           recognition.getLeft(), recognition.getTop());
                         telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
                                 recognition.getRight(), recognition.getBottom());
                       }
+
+                      boolean found = false;
+                      if(skystoneRec != null) {
+
+                          if(skystoneRec.getTop() < 100 && skystoneRec.getHeight() < 600) {
+                              telemetry.addData("FOUND:", "LEFT");
+                          }
+                          else if(skystoneRec.getBottom() > 1100 && skystoneRec.getHeight() < 600) {
+                              telemetry.addData("FOUND:", "RIGHT");
+                          }
+                          else {
+                              telemetry.addData("FOUND:", "MIDDLE");
+                          }
+                      }
+
                       telemetry.update();
+
+                      if(found) {
+                          break;
+                      }
                     }
                 }
             }
@@ -149,7 +182,7 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection = CameraDirection.BACK;
+        parameters.cameraDirection = CameraDirection.FRONT;
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
@@ -164,7 +197,7 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
             "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.7;
+        tfodParameters.minimumConfidence = 0.6;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }

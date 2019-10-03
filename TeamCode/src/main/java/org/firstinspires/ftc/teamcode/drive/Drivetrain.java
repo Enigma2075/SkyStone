@@ -56,8 +56,8 @@ public class Drivetrain extends MecanumDrive {
     private List<ExpansionHubMotor> motors;
     private BNO055IMU imu;
 
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(1, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(1, 0, 0);
 
     public enum Mode {
         IDLE,
@@ -81,7 +81,7 @@ public class Drivetrain extends MecanumDrive {
     public Drivetrain(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH);
 
-        //dashboard = FtcDashboard.getInstance();
+        dashboard = FtcDashboard.getInstance();
         clock = NanoClock.system();
 
         mode = Mode.IDLE;
@@ -97,7 +97,7 @@ public class Drivetrain extends MecanumDrive {
         // TODO: adjust the names of the following hardware devices to match your configuration
         // for simplicity, we assume that the desired IMU and drive motors are on the same hub
         // if your motors are split between hubs, **you will need to add another bulk read**
-        hub = hardwareMap.get(ExpansionHubEx.class, "hub");
+        hub = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");
 
         imu = LynxOptimizedI2cFactory.createLynxEmbeddedImu(hub.getStandardModule(), 0);
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -118,18 +118,17 @@ public class Drivetrain extends MecanumDrive {
         for (ExpansionHubMotor motor : motors) {
             // TODO: decide whether or not to use the built-in velocity PID
             // if you keep it, then don't tune kStatic or kA
-            // otherwise, comment out the following line
+            // otherwise, comment out the follzowing line
             motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
+        // TODO: reverse any motors using DcMotor.setDirection()
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        // TODO: reverse any motors using DcMotor.setDirection()
-
         // TODO: set the tuned coefficients from DriveVelocityPIDTuner if using RUN_USING_ENCODER
-        // setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, ...);
+        setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,new PIDCoefficients(10, 3, 0));
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
@@ -314,11 +313,16 @@ public class Drivetrain extends MecanumDrive {
      * @param r
      */
     public void move(double x, double y, double r) {
-        rightFront.setPower(Range.clip(y+x-r, -1, 1));
-        leftRear.setPower(Range.clip(y+x+r, -1, 1));
+        double rightFrontInput = Range.clip(y-x-r, -1, 1);
+        double leftFrontInput = Range.clip(y+x+r, -1, 1);
+        double rightRearInput = Range.clip(y+x-r, -1, 1);
+        double leftRearInput = Range.clip(y-x+r, -1, 1);
 
-        leftFront.setPower(Range.clip(y-x+r, -1, 1));
-        rightRear.setPower(Range.clip(y-x-r, -1, 1));
+        rightFront.setPower(rightFrontInput);
+        leftRear.setPower(leftRearInput);
+
+        leftFront.setPower(leftFrontInput);
+        rightRear.setPower(rightRearInput);
     }
 
     public void stop() {
