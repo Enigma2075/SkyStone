@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
@@ -14,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.teamcode.arm.Arm;
 import org.firstinspires.ftc.teamcode.drive.Drivetrain;
 
 import java.util.ArrayList;
@@ -40,7 +42,7 @@ public class TestAutoOp extends LinearOpMode {
     //
     // NOTE: If you are running on a CONTROL HUB, with only one USB WebCam, you must select CAMERA_CHOICE = BACK; and PHONE_IS_PORTRAIT = false;
     //
-    private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = FRONT;
+    private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
     private static final boolean PHONE_IS_PORTRAIT = true  ;
 
     /*
@@ -56,7 +58,7 @@ public class TestAutoOp extends LinearOpMode {
      * and paste it in to your code on the next line, between the double quotes.
      */
     private static final String VUFORIA_KEY =
-            "AQE+7zb/////AAAAGQqx0M5sy03JsiJK+SG+VnwOX4cvlY1rkLl8lxGEZ+3//+0T8MsL9XnDDn4KxiHJkgEOtzj9vrDgNYiVJ0OZCXWA9tJUyKt2QRlkhCb7KTWhxsYK4Od6XUfHqCaiwZfyONwMDhTKSMbaY6Sgy0P7yMhTFEFSW3SZPg5rgSDdP/2Tb2wqc7RZ2DaJt6fG+yA6Lq1nkFJmkINc/Ge7GHEvWtPGwHoQS2FWRiRonSY4gLyu79H9ThF50KRidwN9TzAUMXSnGs3Gb4nMaemz4LQNrLfB/bVhOWjLqgfxcktyTZ6X1gv8OBGtK+8lbBXDOBewdtJxLWEQV4p7GLb9Ott+A+VDtD+LJbmkjcLv/YC1m4y0";
+            "AesEjVn/////AAABmb2BQZdrgEoPgHfJ6ad+7uBV/ZjMAhr8s/1TyZyhRuTjFimud9OXlLCM93O1YbpvN98+PeK+Z+QhavrH0HVR5X3YWTtEq4p8tOPnNKj56kAqNORf+4HcsidkFgZ0tSPwPGsKG4pzFD+Sbq6RS0fOv700h+k5lqvRk58+EYFkpCS8lWDzLkyHPo3x/yu8KGXXGxl0dyAKuWjhSIg4NjDSIn6Ofd9tJP17M7dJ0ku6d0oFPwIUPzlho/LjAF2WZY7Kh8twQDIeiHWtUz69TsS46w0Fc3Bn9xVmP/Vwr/w/ZSW+YxMi3nxLf8+QQQaptNRfgXF96v//XJmZWqSxkrQb8/cVQLHgM2FuyNOABs65jaZS";
 
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
@@ -84,6 +86,13 @@ public class TestAutoOp extends LinearOpMode {
     private float phoneXRotate    = 0;
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
+
+    /**
+     * This is the webcam we are to use. As with other hardware devices such as motors and
+     * servos, this device is identified using the robot configuration tool in the FTC application.
+     */
+    WebcamName webcamName = null;
+
     /////////////// ---- END Vuforia
 
     public static double DISTANCE = 60;
@@ -92,6 +101,11 @@ public class TestAutoOp extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         ///////////// -------- START Vuforia
         /*
+         * Retrieve the camera we are to use.
+         */
+        webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
+
+        /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
          * We can pass Vuforia the handle to a camera preview resource (on the RC phone);
          * If no camera monitor is desired, use the parameter-less constructor instead (commented out below).
@@ -99,7 +113,14 @@ public class TestAutoOp extends LinearOpMode {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
-        // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+        //VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+
+        /**
+         * We also indicate which camera on the RC we wish to use.
+         */
+        parameters.cameraName = webcamName;
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
         parameters.cameraDirection   = CAMERA_CHOICE;
@@ -181,10 +202,12 @@ public class TestAutoOp extends LinearOpMode {
 
         ///////////// -------- END Vuforia
 
-        Drivetrain drive = new Drivetrain(hardwareMap);
+        Robot robot = new Robot(hardwareMap, telemetry);
+
+        Drivetrain drive = robot.drivetrain;
 
         Trajectory trajectory = drive.trajectoryBuilder()
-                .strafeLeft(20)
+                .strafeLeft(21)
                 .build();
 
         targetsSkyStone.activate();
@@ -200,24 +223,26 @@ public class TestAutoOp extends LinearOpMode {
         drive.followTrajectorySync(trajectory);
 
 
-        for(int i = 0; i < 100 && !found; i++) {
+        for(int i = 0; i < 200 && !found; i++) {
+            sleep(2);
             found = findObject(allTrackables);
         }
 
         if(!found) {
             Trajectory trajectory5 = drive.trajectoryBuilder()
-                    .forward(7)
+                    .forward(10)
                     .build();
             drive.followTrajectorySync(trajectory5);
         }
 
-        for(int i = 0; i < 100 && !found; i++) {
+        for(int i = 0; i < 200 && !found; i++) {
+            sleep(2);
             found = findObject(allTrackables);
         }
 
         if(!found) {
             Trajectory trajectory5 = drive.trajectoryBuilder()
-                    .forward(7)
+                    .forward(10)
                     .build();
             drive.followTrajectorySync(trajectory5);
         }
@@ -226,17 +251,21 @@ public class TestAutoOp extends LinearOpMode {
         targetsSkyStone.deactivate();
 
         Trajectory trajectory5 = drive.trajectoryBuilder()
-                .strafeLeft(18)
+                .strafeLeft(20)
                 .build();
 
         drive.followTrajectorySync(trajectory5);
 
-        /*
+        robot.arm.moveToPositionSync(Arm.Position.DOWN);
+        robot.arm.moveToPositionSync(Arm.Position.UP);
+
         Trajectory trajectory1 = drive.trajectoryBuilder()
                 //.lineTo(new Vector2d())
                 .forward(74)
                 .build();
         drive.followTrajectorySync(trajectory1);
+
+        /*
 
         Trajectory trajectory2 = drive.trajectoryBuilder()
                 .back(74)
