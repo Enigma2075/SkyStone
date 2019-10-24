@@ -207,7 +207,7 @@ public class TestAutoOp extends LinearOpMode {
         Drivetrain drive = robot.drivetrain;
 
         Trajectory trajectory = drive.trajectoryBuilder()
-                .strafeLeft(21)
+                .strafeRight(19)
                 .build();
 
         targetsSkyStone.activate();
@@ -230,7 +230,7 @@ public class TestAutoOp extends LinearOpMode {
 
         if(!found) {
             Trajectory trajectory5 = drive.trajectoryBuilder()
-                    .forward(10)
+                    .back(8)
                     .build();
             drive.followTrajectorySync(trajectory5);
         }
@@ -242,7 +242,7 @@ public class TestAutoOp extends LinearOpMode {
 
         if(!found) {
             Trajectory trajectory5 = drive.trajectoryBuilder()
-                    .forward(10)
+                    .back(8)
                     .build();
             drive.followTrajectorySync(trajectory5);
         }
@@ -251,7 +251,7 @@ public class TestAutoOp extends LinearOpMode {
         targetsSkyStone.deactivate();
 
         Trajectory trajectory5 = drive.trajectoryBuilder()
-                .strafeLeft(20)
+                .strafeRight(10)
                 .build();
 
         drive.followTrajectorySync(trajectory5);
@@ -261,7 +261,7 @@ public class TestAutoOp extends LinearOpMode {
 
         Trajectory trajectory1 = drive.trajectoryBuilder()
                 //.lineTo(new Vector2d())
-                .forward(74)
+                .back(74)
                 .build();
         drive.followTrajectorySync(trajectory1);
 

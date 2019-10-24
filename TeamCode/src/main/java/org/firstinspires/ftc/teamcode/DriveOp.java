@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.arm.Arm;
 
 @TeleOp(name="DriveOp", group="Basic")
 public class DriveOp extends LinearOpMode {
@@ -34,6 +35,13 @@ public class DriveOp extends LinearOpMode {
             //telemetry.addData("Joy", "{X, Y, R} = %.1f, %.1f, %.1f", x, y, r);
 
             robot.drivetrain.move(x, y, r);
+
+            if(gamepad1.a) {
+                robot.arm.moveToPosition(Arm.Position.DOWN);
+            }
+            else {
+                robot.arm.moveToPosition(Arm.Position.UP);
+            }
 
             telemetry.update();
         }

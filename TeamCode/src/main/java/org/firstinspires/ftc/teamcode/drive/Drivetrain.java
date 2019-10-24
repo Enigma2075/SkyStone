@@ -28,21 +28,17 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.Range;
 import com.acmerobotics.roadrunner.drive.MecanumDrive;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.drive.localizer.StandardTrackingWheelLocalizer;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
-import org.firstinspires.ftc.teamcode.util.LynxOptimizedI2cFactory;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
-import org.openftc.revextensions2.RevBulkData;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.BASE_CONSTRAINTS;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TRACK_WIDTH;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.encoderTicksToInches;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kA;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kStatic;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
@@ -56,8 +52,8 @@ public class Drivetrain extends MecanumDrive {
     private List<ExpansionHubMotor> motors;
     private BNO055IMU imu;
 
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(1, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(1, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(.3, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(.127, 0, 0);
 
     public enum Mode {
         IDLE,
@@ -99,7 +95,7 @@ public class Drivetrain extends MecanumDrive {
         // if your motors are split between hubs, **you will need to add another bulk read**
         hub = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");
 
-        imu = LynxOptimizedI2cFactory.createLynxEmbeddedImu(hub.getStandardModule(), 0);
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
         imu.initialize(parameters);
@@ -118,8 +114,8 @@ public class Drivetrain extends MecanumDrive {
         for (ExpansionHubMotor motor : motors) {
             // TODO: decide whether or not to use the built-in velocity PID
             // if you keep it, then don't tune kStatic or kA
-            // otherwise, comment out the follzowing line
-            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            // otherwise, comment out the following line
+            motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
@@ -128,10 +124,11 @@ public class Drivetrain extends MecanumDrive {
         rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // TODO: set the tuned coefficients from DriveVelocityPIDTuner if using RUN_USING_ENCODER
-        setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,new PIDCoefficients(10, 3, 0));
+        //setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,new PIDCoefficients(10, 3, 0));
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
+        setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
 
         this.hardwareMap = hardwareMap;
     }
@@ -152,17 +149,19 @@ public class Drivetrain extends MecanumDrive {
     @NonNull
     @Override
     public List<Double> getWheelPositions() {
-        RevBulkData bulkData = hub.getBulkInputData();
+        return ((StandardTrackingWheelLocalizer)getLocalizer()).getWheelPositions();
 
-        if (bulkData == null) {
-            return Arrays.asList(0.0, 0.0, 0.0, 0.0);
-        }
+        //RevBulkData bulkData = hub.getBulkInputData();
 
-        List<Double> wheelPositions = new ArrayList<>();
-        for (ExpansionHubMotor motor : motors) {
-            wheelPositions.add(encoderTicksToInches(bulkData.getMotorCurrentPosition(motor)));
-        }
-        return wheelPositions;
+        //if (bulkData == null) {
+        //    return Arrays.asList(0.0, 0.0, 0.0, 0.0);
+        //}
+
+        //List<Double> wheelPositions = new ArrayList<>();
+        //for (ExpansionHubMotor motor : motors) {
+        //    wheelPositions.add(encoderTicksToInches(bulkData.getMotorCurrentPosition(motor)));
+        //}
+        //return wheelPositions;
     }
 
     @Override
@@ -184,6 +183,7 @@ public class Drivetrain extends MecanumDrive {
 
     public void turn(double angle) {
         double heading = getPoseEstimate().getHeading();
+        turnController.setTargetPosition(heading + angle);
         turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(
                 new MotionState(heading, 0, 0, 0),
                 new MotionState(heading + angle, 0, 0, 0),
@@ -253,6 +253,8 @@ public class Drivetrain extends MecanumDrive {
                 double targetOmega = targetState.getV();
                 double targetAlpha = targetState.getA();
                 double correction = turnController.update(currentPose.getHeading(), targetOmega);
+
+                packet.put("headingTarget", turnController.getTargetPosition());
 
                 setDriveSignal(new DriveSignal(new Pose2d(
                         0, 0, targetOmega + correction
@@ -326,9 +328,13 @@ public class Drivetrain extends MecanumDrive {
     }
 
     public void stop() {
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setPower(0);
+        rightRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightRear.setPower(0);
+        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftFront.setPower(0);
+        leftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftRear.setPower(0);
     }
 }

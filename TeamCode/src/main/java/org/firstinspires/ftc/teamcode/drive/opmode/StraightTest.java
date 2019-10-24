@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.drive.Drivetrain;
 @Config
 @Autonomous(group = "drive")
 public class StraightTest extends LinearOpMode {
-    public static double DISTANCE = 60;
+    public static double DISTANCE = 72;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -28,5 +28,10 @@ public class StraightTest extends LinearOpMode {
         if (isStopRequested()) return;
 
         drive.followTrajectorySync(trajectory);
+
+        drive.stop();
+
+        while (getRuntime() < 10 && !isStopRequested()) {
+        }
     }
 }

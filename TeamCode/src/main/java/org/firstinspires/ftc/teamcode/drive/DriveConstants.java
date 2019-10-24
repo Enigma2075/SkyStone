@@ -17,9 +17,9 @@ public class DriveConstants {
      * navigate to https://192.168.49.1:8080/dash). Make sure to save the values here after you
      * adjust them in the dashboard; **config variable changes don't persist between app restarts**.
      */
-    private static final MotorConfigurationType MOTOR_CONFIG =
-            MotorConfigurationType.getMotorType(NeveRest20Gearmotor.class);
-    private static final double TICKS_PER_REV = MOTOR_CONFIG.getTicksPerRev();
+    //private static final MotorConfigurationType MOTOR_CONFIG =
+    //        MotorConfigurationType.getMotorType(NeveRest20Gearmotor.class);
+    private static final double TICKS_PER_REV = 4096;
 
     /*
      * These are physical constants that can be determined from your robot (including the track
@@ -29,9 +29,9 @@ public class DriveConstants {
      * angular distances although most angular parameters are wrapped in Math.toRadians() for
      * convenience.
      */
-    public static double WHEEL_RADIUS = 4.01159478 / 2.0;
+    public static double WHEEL_RADIUS = 1.96 / 2.0;
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 19.25;
+    public static double TRACK_WIDTH = 12.4;
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -39,9 +39,9 @@ public class DriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = 1.0 / rpmToVelocity(getMaxRpm());
-    public static double kA = 0;
-    public static double kStatic = 0;
+    public static double kV = .02004; // / rpmToVelocity(getMaxRpm());
+    public static double kA = 0.00033;
+    public static double kStatic = .02678;
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
@@ -52,7 +52,7 @@ public class DriveConstants {
      * forces acceleration-limited profiling).
      */
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
-            80.0, 30.0, 0.0,
+            50, 20, 0.0,
             Math.toRadians(180.0), Math.toRadians(180.0), 0.0
     );
 
@@ -66,6 +66,6 @@ public class DriveConstants {
     }
 
     public static double getMaxRpm() {
-        return MOTOR_CONFIG.getMaxRPM();
+        return 512.21346938775510204081632653061;
     }
 }
