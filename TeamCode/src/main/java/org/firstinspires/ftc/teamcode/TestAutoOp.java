@@ -35,18 +35,19 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 @Config
 @Autonomous(group = "drive")
 public class TestAutoOp extends LinearOpMode {
-
-    public static double DISTANCE = 60;
+    Robot robot = null;
+    Drivetrain drive = null;
+    Arm arm = null;
+    Vision vision = null;
 
     @Override
     public void runOpMode() throws InterruptedException {
+        robot = new Robot(hardwareMap, telemetry);
+        drive = robot.drivetrain;
+        arm = robot.arm;
+        vision = robot.vision;
 
-        Robot robot = new Robot(hardwareMap, telemetry);
-        Drivetrain drive = robot.drivetrain;
-        Arm arm = robot.arm;
-        Vision vision = robot.vision;
-
-        Trajectory trajectory = drive.trajectoryBuilder()
+        Trajectory moveToSeeSkyStone = drive.trajectoryBuilder()
                 .strafeRight(19)
                 .build();
 
@@ -63,43 +64,40 @@ public class TestAutoOp extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        drive.followTrajectorySync(trajectory);
+        found = followTrajectoryAndFindObject(moveToSeeSkyStone);
 
-        for(int i = 0; i < 200 && !found; i++) {
-            sleep(2);
-            found = vision.findObject();
+        if(!found) {
+            found = findObject();
+
+            if (!found) {
+                Trajectory moveToNextSkyStone = drive.trajectoryBuilder()
+                        .back(8)
+                        .build();
+                followTrajectoryAndFindObject(moveToNextSkyStone);
+            }
         }
 
         if(!found) {
-            Trajectory trajectory5 = drive.trajectoryBuilder()
-                    .back(8)
-                    .build();
-            drive.followTrajectorySync(trajectory5);
-        }
+            found = findObject();
 
-        for(int i = 0; i < 200 && !found; i++) {
-            sleep(2);
-            found = vision.findObject();
-        }
-
-        if(!found) {
-            Trajectory trajectory5 = drive.trajectoryBuilder()
-                    .back(8)
-                    .build();
-            drive.followTrajectorySync(trajectory5);
+            if (!found) {
+                Trajectory moveToNextSkyStone = drive.trajectoryBuilder()
+                        .back(8)
+                        .build();
+                followTrajectoryAndFindObject(moveToNextSkyStone);
+            }
         }
 
         // Disable Tracking when we are done;
         vision.deactivate();
 
-        Trajectory trajectory5 = drive.trajectoryBuilder()
+        Trajectory moveToGrabSkyStone1 = drive.trajectoryBuilder()
                 .strafeRight(14)
                 .build();
 
-        drive.followTrajectorySync(trajectory5);
+        drive.followTrajectorySync(moveToGrabSkyStone1);
 
-        robot.arm.moveToPositionSync(Arm.Position.DOWN);
-        robot.arm.moveToPositionSync(Arm.Position.UP);
+        robot.grabStone();
 
         Trajectory trajectory1 = drive.trajectoryBuilder()
                 //.lineTo(new Vector2d())
@@ -107,23 +105,27 @@ public class TestAutoOp extends LinearOpMode {
                 .build();
         drive.followTrajectorySync(trajectory1);
 
-        /*
+        robot.dropStone();
+    }
 
-        Trajectory trajectory2 = drive.trajectoryBuilder()
-                .back(74)
-                .build();
+    private boolean followTrajectoryAndFindObject(Trajectory trajectory) {
+        boolean found = false;
+        while(drive.isBusy() && !isStopRequested()) {
+            drive.update();
+            if(!found) {
+                found = vision.findObject();
+            }
+        }
+        return found;
+    }
 
-        drive.followTrajectorySync(trajectory2);
-        Trajectory trajectory3 = drive.trajectoryBuilder()
-                .forward(74)
-                .build();
-
-        drive.followTrajectorySync(trajectory3);
-        Trajectory trajectory4 = drive.trajectoryBuilder()
-                .strafeRight(38)
-                .build();
-        drive.followTrajectorySync(trajectory4);
-*/
+    private boolean findObject() {
+        boolean found = false;
+        for (int i = 0; i < 200 && !found; i++) {
+            sleep(2);
+            found = vision.findObject();
+        }
+        return found;
     }
 
 }

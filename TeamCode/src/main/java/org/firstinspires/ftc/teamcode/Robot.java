@@ -23,6 +23,16 @@ public class Robot {
         this.telemetry = telemetry;
     }
 
+    public void grabStone() {
+        arm.moveToPositionSync(Arm.Position.DOWN);
+        arm.moveToPositionSync(Arm.Position.UP);
+    }
+
+    public void dropStone() {
+        arm.moveToPosition(Arm.Position.DOWN);
+        arm.moveToPosition(Arm.Position.UP);
+    }
+
     public void stop() {
         drivetrain.stop();
     }
