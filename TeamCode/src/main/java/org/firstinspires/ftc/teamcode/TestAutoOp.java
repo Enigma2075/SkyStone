@@ -50,8 +50,11 @@ public class TestAutoOp extends LinearOpMode {
                 .strafeRight(19)
                 .build();
 
+        vision.init();
         vision.activate();
+
         boolean found = false;
+
         while (!isStopRequested() && !isStarted()) {
             found = vision.findObject();
         }
@@ -61,7 +64,6 @@ public class TestAutoOp extends LinearOpMode {
         if (isStopRequested()) return;
 
         drive.followTrajectorySync(trajectory);
-
 
         for(int i = 0; i < 200 && !found; i++) {
             sleep(2);
