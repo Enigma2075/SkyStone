@@ -331,13 +331,7 @@ public class Drivetrain extends MecanumDrive {
     }
 
     public void stop() {
-        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightFront.setPower(0);
-        rightRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightRear.setPower(0);
-        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftFront.setPower(0);
-        leftRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftRear.setPower(0);
+        mode = Mode.IDLE;
+        setDriveSignal(new DriveSignal());
     }
 }
