@@ -54,27 +54,20 @@ public class TestAutoOp extends LinearOpMode {
         vision.init();
         vision.activate();
 
-        boolean found = false;
-
-        while (!isStopRequested() && !isStarted()) {
-            found = vision.findObject();
-        }
-
-        //waitForStart();
+        waitForStart();
 
         if (isStopRequested()) return;
 
-        found = followTrajectoryAndFindObject(moveToSeeSkyStone);
+        drive.followTrajectorySync(moveToSeeSkyStone);
 
-        if(!found) {
-            found = findObject();
+        boolean found = false;
+        found = findObject();
 
-            if (!found) {
-                Trajectory moveToNextSkyStone = drive.trajectoryBuilder()
-                        .back(8)
-                        .build();
-                found = followTrajectoryAndFindObject(moveToNextSkyStone);
-            }
+        if (!found) {
+            Trajectory moveToNextSkyStone = drive.trajectoryBuilder()
+                    .back(8)
+                    .build();
+            found = followTrajectoryAndFindObject(moveToNextSkyStone);
         }
 
         if(!found) {
