@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -17,6 +18,11 @@ public class DriveOp extends LinearOpMode {
 
         waitForStart();
 
+        double rpm = 0;
+
+        double startTime = getRuntime();
+        int currentPosition = robot.drivetrain.getEncoder();
+
         while(opModeIsActive()) {
             double x = gamepad1.left_stick_x;
             double y = -gamepad1.left_stick_y;
@@ -27,8 +33,20 @@ public class DriveOp extends LinearOpMode {
             //double leftFrontInput = Range.clip(y-x+r, -1, 1);
             //double rightRearInput = Range.clip(y-x-r, -1, 1);
 
+            double currentRpm = (((currentPosition - robot.drivetrain.getEncoder()) / 4096.0) / (startTime - getRuntime())) * 60.0;
+
+            if(currentRpm > rpm) {
+                rpm = currentRpm;
+            }
+
+            startTime = getRuntime();
+            currentPosition = robot.drivetrain.getEncoder();
+
+            //robot.drivetrain.update();
+
             telemetry.addData("Heading", "%.1f", robot.drivetrain.getPoseEstimate().getHeading());
             telemetry.addData("External Heading", "%.1f", robot.drivetrain.getExternalHeading());
+            telemetry.addData("RPM", "%.1f", rpm);
 
             //telemetry.addData("DrivePower", "rf,lf,rf,rr = %.1f, %.1f, %.1f, %.1f", rightFrontInput, leftFrontInput, rightRearInput, leftRearInput);
 

@@ -39,9 +39,9 @@ public class DriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = .02004; // / rpmToVelocity(getMaxRpm());
-    public static double kA = 0.00033;
-    public static double kStatic = .02678;
+    public static double kV = .0175; // / rpmToVelocity(getMaxRpm());
+    public static double kA = 0.002;
+    public static double kStatic = .03974;
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
@@ -52,7 +52,7 @@ public class DriveConstants {
      * forces acceleration-limited profiling).
      */
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
-            50, 20, 0.0,
+            40, 50, 0.01,
             Math.toRadians(180.0), Math.toRadians(180.0), 0.0
     );
 
@@ -66,6 +66,6 @@ public class DriveConstants {
     }
 
     public static double getMaxRpm() {
-        return 512.21346938775510204081632653061;
+        return 476;
     }
 }

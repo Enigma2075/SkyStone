@@ -52,8 +52,8 @@ public class Drivetrain extends MecanumDrive {
     private List<ExpansionHubMotor> motors;
     private BNO055IMU imu;
 
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(.3, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(.127, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(.35, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(.8, 0, 0);
 
     public enum Mode {
         IDLE,
@@ -171,6 +171,8 @@ public class Drivetrain extends MecanumDrive {
         rightRear.setPower(v2);
         rightFront.setPower(v3);
     }
+
+    public int getEncoder() { return rightFront.getCurrentPosition();}
 
     @Override
     public double getRawExternalHeading() {
