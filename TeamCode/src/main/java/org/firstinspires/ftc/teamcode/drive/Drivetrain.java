@@ -29,6 +29,7 @@ import com.qualcomm.robotcore.util.Range;
 import com.acmerobotics.roadrunner.drive.MecanumDrive;
 
 import org.firstinspires.ftc.teamcode.drive.localizer.StandardTrackingWheelLocalizer;
+import org.firstinspires.ftc.teamcode.drive.localizer.TwoWheelLocalizer;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
 import org.openftc.revextensions2.ExpansionHubEx;
@@ -52,8 +53,8 @@ public class Drivetrain extends MecanumDrive {
     private List<ExpansionHubMotor> motors;
     private BNO055IMU imu;
 
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(.35, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(.8, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(2, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(5, 0, 0);
 
     public enum Mode {
         IDLE,
@@ -128,7 +129,7 @@ public class Drivetrain extends MecanumDrive {
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
-        setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
+        setLocalizer(new TwoWheelLocalizer(hardwareMap)); //new StandardTrackingWheelLocalizer(hardwareMap));
 
         this.hardwareMap = hardwareMap;
     }

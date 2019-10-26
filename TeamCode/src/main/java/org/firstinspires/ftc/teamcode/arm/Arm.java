@@ -16,7 +16,7 @@ public class Arm {
     private Servo arm;
 
     public enum Position {
-        UP(0.0), DOWN(1.0);
+        UP(0.0), DOWN(1.0), DROP(.7);
 
         private double numVal;
 
@@ -47,8 +47,13 @@ public class Arm {
 
         switch (position) {
             case UP:
+                timeout = .5;
+                break;
             case DOWN:
-                timeout = .75;
+                timeout = 1;
+                break;
+            case DROP:
+                timeout = .16;
         }
         while (!Thread.currentThread().isInterrupted() && clock.seconds() - start < timeout) {
         }
@@ -60,7 +65,6 @@ public class Arm {
 
     public void moveToPositionSync(Position position) {
         moveToPosition(position);
-
         waitForMovement(position);
     }
 
