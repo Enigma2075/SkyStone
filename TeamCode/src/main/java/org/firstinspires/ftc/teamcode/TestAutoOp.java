@@ -73,7 +73,7 @@ public class TestAutoOp extends LinearOpMode {
                 Trajectory moveToNextSkyStone = drive.trajectoryBuilder()
                         .back(8)
                         .build();
-                followTrajectoryAndFindObject(moveToNextSkyStone);
+                found = followTrajectoryAndFindObject(moveToNextSkyStone);
             }
         }
 
@@ -84,18 +84,18 @@ public class TestAutoOp extends LinearOpMode {
                 Trajectory moveToNextSkyStone = drive.trajectoryBuilder()
                         .back(8)
                         .build();
-                followTrajectoryAndFindObject(moveToNextSkyStone);
+                drive.followTrajectorySync(moveToNextSkyStone);
             }
         }
 
         // Disable Tracking when we are done;
         vision.deactivate();
 
-        Trajectory moveToGrabSkyStone1 = drive.trajectoryBuilder()
+        Trajectory moveToGrabSkyStone = drive.trajectoryBuilder()
                 .strafeRight(14)
                 .build();
 
-        drive.followTrajectorySync(moveToGrabSkyStone1);
+        drive.followTrajectorySync(moveToGrabSkyStone);
 
         robot.grabStone();
 
@@ -110,6 +110,7 @@ public class TestAutoOp extends LinearOpMode {
 
     private boolean followTrajectoryAndFindObject(Trajectory trajectory) {
         boolean found = false;
+        drive.followTrajectory(trajectory);
         while(drive.isBusy() && !isStopRequested()) {
             drive.update();
             if(!found) {
