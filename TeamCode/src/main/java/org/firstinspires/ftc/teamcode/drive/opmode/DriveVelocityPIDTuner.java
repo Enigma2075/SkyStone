@@ -17,8 +17,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.Drivetrain;
+import org.firstinspires.ftc.teamcode.sensors.SensorArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +48,8 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
     private FtcDashboard dashboard = FtcDashboard.getInstance();
     private String catName;
     private CustomVariable catVar;
+
+    private SensorArray sensorArray;
 
     private Drivetrain drive;
 
@@ -127,7 +131,9 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
-        drive = new Drivetrain(hardwareMap);
+        Robot robot = new Robot(hardwareMap, telemetry);
+        Drivetrain drive = robot.drivetrain;
+        sensorArray = robot.sensorArray;
 
         addPidVariable();
 
@@ -149,6 +155,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
         double lastTimestamp = 0;
 
         while (!isStopRequested()) {
+            sensorArray.clearRead();
             // calculate and set the motor power
             double profileTime = clock.seconds() - profileStart;
             double dt = profileTime - lastTimestamp;

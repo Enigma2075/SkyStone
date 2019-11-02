@@ -5,7 +5,9 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.drive.Drivetrain;
+import org.firstinspires.ftc.teamcode.sensors.SensorArray;
 
 /*
  * Op mode for tuning follower PID coefficients. The robot drives in a DISTANCE-by-DISTANCE square
@@ -18,7 +20,8 @@ public class FollowerPIDTuner extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Drivetrain drive = new Drivetrain(hardwareMap);
+        Robot robot = new Robot(hardwareMap, telemetry);
+        Drivetrain drive = robot.drivetrain;
 
         drive.setPoseEstimate(new Pose2d(-DISTANCE / 2, -DISTANCE / 2, 0));
 

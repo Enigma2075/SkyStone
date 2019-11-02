@@ -6,7 +6,9 @@ import com.acmerobotics.roadrunner.path.heading.LinearInterpolator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.drive.Drivetrain;
+import org.firstinspires.ftc.teamcode.sensors.SensorArray;
 
 /*
  * This is an example of a more complex path to really test the tuning.
@@ -15,7 +17,8 @@ import org.firstinspires.ftc.teamcode.drive.Drivetrain;
 public class SplineTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        Drivetrain drive = new Drivetrain(hardwareMap);
+        Robot robot = new Robot(hardwareMap, telemetry);
+        Drivetrain drive = robot.drivetrain;
 
         waitForStart();
 
@@ -23,8 +26,8 @@ public class SplineTest extends LinearOpMode {
 
         drive.followTrajectorySync(
                 drive.trajectoryBuilder()
-                        .lineTo(new Vector2d(30,30), new LinearInterpolator(0, Math.toRadians(0)))
-                        //.splineTo(new Pose2d(30, 30, 0))
+                        //.lineTo(new Vector2d(30,30), new LinearInterpolator(0, Math.toRadians(0)))
+                        .splineTo(new Pose2d(30, 30, 0))
                         .build()
         );
 
@@ -33,8 +36,8 @@ public class SplineTest extends LinearOpMode {
         drive.followTrajectorySync(
                 drive.trajectoryBuilder()
                         .reverse()
-                        .lineTo(new Vector2d(0,0), new LinearInterpolator(0, Math.toRadians(0)))
-                        //.splineTo(new Pose2d(0, 0, 0))
+                        //.lineTo(new Vector2d(0,0), new LinearInterpolator(0, Math.toRadians(0)))
+                        .splineTo(new Pose2d(0, 0, 0))
                         .build()
         );
     }

@@ -17,9 +17,8 @@ public class DriveConstants {
      * navigate to https://192.168.49.1:8080/dash). Make sure to save the values here after you
      * adjust them in the dashboard; **config variable changes don't persist between app restarts**.
      */
-    //private static final MotorConfigurationType MOTOR_CONFIG =
-    //        MotorConfigurationType.getMotorType(NeveRest20Gearmotor.class);
-    private static final double TICKS_PER_REV = 4096;
+    public static final double TICKS_PER_REV = 537.6;
+    private static final double MAX_RPM = 290.0;
 
     /*
      * These are physical constants that can be determined from your robot (including the track
@@ -29,9 +28,9 @@ public class DriveConstants {
      * angular distances although most angular parameters are wrapped in Math.toRadians() for
      * convenience.
      */
-    public static double WHEEL_RADIUS = 1.96 / 2.0;
+    public static double WHEEL_RADIUS = 75.0 / 25.4 / 2.0;
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 12.4;
+    public static double TRACK_WIDTH = 15.6;
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -39,9 +38,12 @@ public class DriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = .0175; // / rpmToVelocity(getMaxRpm());
-    public static double kA = 0.002;
-    public static double kStatic = .03974;
+    //public static double kV = .01974; // / rpmToVelocity(getMaxRpm());
+    //public static double kA = 0.00029;
+    //public static double kStatic = .04192;
+    public static double kV = 1 / rpmToVelocity(getMaxRpm());
+    public static double kA = 0.0;
+    public static double kStatic = 0.0;
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
@@ -66,6 +68,6 @@ public class DriveConstants {
     }
 
     public static double getMaxRpm() {
-        return 476;
+        return MAX_RPM;
     }
 }

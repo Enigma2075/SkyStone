@@ -6,6 +6,8 @@ import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.Robot;
+
 @Config
 public class Arm {
     private HardwareMap hardwareMap;
@@ -13,10 +15,13 @@ public class Arm {
     private FtcDashboard dashboard;
     private NanoClock clock;
 
-    private Servo arm;
+    private Servo right;
+    private Servo left;
+
+    public enum Side { RIGHT, LEFT}
 
     public enum Position {
-        UP(0.0), DOWN(1.0), DROP(.7);
+        UP(0.0), HOLD(.4), DOWN(1.0), DROP(.8);
 
         private double numVal;
 
@@ -35,9 +40,13 @@ public class Arm {
 
         this.hardwareMap = hardwareMap;
 
-        arm = hardwareMap.servo.get("arm");
+        right = hardwareMap.servo.get("rightArm");
+        left = hardwareMap.servo.get("leftArm");
 
-        moveToPosition(Position.UP);
+        left.setDirection(Servo.Direction.REVERSE);
+
+        left.setPosition(Position.UP.getNumVal());
+        right.setPosition(Position.UP.getNumVal());
     }
 
     public void waitForMovement(Position position) {
@@ -47,28 +56,40 @@ public class Arm {
 
         switch (position) {
             case UP:
+            case HOLD:
                 timeout = .5;
                 break;
             case DOWN:
-                timeout = 1;
+                timeout = 1.25;
                 break;
             case DROP:
-                timeout = .16;
+                timeout = .15;
         }
         while (!Thread.currentThread().isInterrupted() && clock.seconds() - start < timeout) {
         }
     }
 
-    public void moveToPosition(Position position) {
-        arm.setPosition(position.getNumVal());
+    public void moveToPosition(Position position, Side side) {
+        if(side == Side.RIGHT) {
+            right.setPosition(position.getNumVal());
+        }
+        else {
+            if(position == Position.HOLD) {
+                left.setPosition(.5);
+            }
+            else {
+                left.setPosition(position.getNumVal());
+            }
+        }
     }
 
-    public void moveToPositionSync(Position position) {
-        moveToPosition(position);
+    public void moveToPositionSync(Position position, Side side) {
+        moveToPosition(position, side);
         waitForMovement(position);
     }
 
     public void stop() {
-        moveToPosition(Position.UP);
+        moveToPosition(Position.HOLD, Side.RIGHT);
+        moveToPosition(Position.HOLD, Side.LEFT);
     }
 }

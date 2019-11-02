@@ -5,7 +5,9 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.drive.Drivetrain;
+import org.firstinspires.ftc.teamcode.sensors.SensorArray;
 
 /*
  * This is a simple routine to test translational drive capabilities.
@@ -17,10 +19,11 @@ public class StraightTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Drivetrain drive = new Drivetrain(hardwareMap);
+        Robot robot = new Robot(hardwareMap, telemetry);
+        Drivetrain drive = robot.drivetrain;
 
         Trajectory trajectory = drive.trajectoryBuilder()
-                .forward(DISTANCE)
+                .strafeLeft(DISTANCE)
                 .build();
 
         waitForStart();

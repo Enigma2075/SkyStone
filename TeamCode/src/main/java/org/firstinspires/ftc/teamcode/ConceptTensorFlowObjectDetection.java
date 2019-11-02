@@ -147,10 +147,10 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
                       if(skystoneRec != null) {
 
                           if(skystoneRec.getTop() < 100 && skystoneRec.getHeight() < 600) {
-                              telemetry.addData("FOUND:", "LEFT");
+                              telemetry.addData("FOUND:", "WALL");
                           }
                           else if(skystoneRec.getBottom() > 1100 && skystoneRec.getHeight() < 600) {
-                              telemetry.addData("FOUND:", "RIGHT");
+                              telemetry.addData("FOUND:", "BRIDGE");
                           }
                           else {
                               telemetry.addData("FOUND:", "MIDDLE");

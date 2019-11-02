@@ -5,7 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.drive.Drivetrain;
+import org.firstinspires.ftc.teamcode.sensors.SensorArray;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
 import org.openftc.revextensions2.RevBulkData;
@@ -25,34 +27,28 @@ import java.util.List;
 public class LocalizationTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        Drivetrain drive = new Drivetrain(hardwareMap);
-
-        ExpansionHubEx hub;
-
-        DcMotor leftEncoder, rightEncoder, frontEncoder;
-
-        hub = hardwareMap.get(ExpansionHubEx.class, "Expansion Hub 2");
-
-        leftEncoder = hardwareMap.get(ExpansionHubMotor.class, "leftFront");
-        rightEncoder = hardwareMap.get(ExpansionHubMotor.class, "rightFront");
-        frontEncoder = hardwareMap.get(ExpansionHubMotor.class, "rightRear");
+        Robot robot = new Robot(hardwareMap, telemetry);
+        Drivetrain drive = robot.drivetrain;
 
         waitForStart();
 
         while (!isStopRequested()) {
             drive.setDrivePower(new Pose2d(
                     -gamepad1.left_stick_y,
-                    gamepad1.left_stick_x,
-                    gamepad1.right_stick_x
+                    -gamepad1.left_stick_x,
+                    -gamepad1.right_stick_x
             ));
 
-            drive.update();
+            robot.sensorArray.clearRead();
+            drive.updatePoseEstimate();
+            //drive.update();
 
-            RevBulkData bulkData = hub.getBulkInputData();
+            List<Double> positions = drive.getWheelPositions();
 
-            telemetry.addData("left", leftEncoder.getCurrentPosition());
-            telemetry.addData("right", rightEncoder.getCurrentPosition());
-            telemetry.addData("front", frontEncoder.getCurrentPosition());
+            telemetry.addData("leftFront", positions.get(0));
+            telemetry.addData("leftRear", positions.get(1));
+            telemetry.addData("rightRear", positions.get(2));
+            telemetry.addData("rightFront", positions.get(3));
 
 
             Pose2d poseEstimate = drive.getPoseEstimate();
