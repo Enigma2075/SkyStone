@@ -81,7 +81,6 @@ public class Drivetrain extends MecanumDrive {
     private DriveConstraints constraints;
     private TrajectoryFollower follower;
 
-
     public Drivetrain(HardwareMap hardwareMap, SensorArray sensorArray) {
         super(kV, kA, kStatic, TRACK_WIDTH);
 
@@ -137,6 +136,13 @@ public class Drivetrain extends MecanumDrive {
 
         this.hardwareMap = hardwareMap;
     }
+
+    public void setMode(DcMotor.RunMode mode) {
+        for(ExpansionHubMotor motor: motors) {
+            motor.setMode(mode);
+        }
+    }
+
 
     public PIDCoefficients getPIDCoefficients(DcMotor.RunMode runMode) {
         PIDFCoefficients coefficients = leftFront.getPIDFCoefficients(runMode);

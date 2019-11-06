@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.arm.Arm;
 import org.firstinspires.ftc.teamcode.drive.Drivetrain;
+import org.firstinspires.ftc.teamcode.foundationGrabber.FoundationGrabber;
 import org.firstinspires.ftc.teamcode.intake.Intake;
 import org.firstinspires.ftc.teamcode.sensors.SensorArray;
 import org.firstinspires.ftc.teamcode.vision.Vision;
@@ -26,6 +27,8 @@ public class Robot {
 
     public Rev2mDistanceSensor rightDist;
     public Rev2mDistanceSensor leftDist;
+
+    public FoundationGrabber foundationGrabber;
 
     public AutoSide autoSide;
 
@@ -53,6 +56,8 @@ public class Robot {
         intake = new Intake(hardwareMap, sensorArray);
 
         vision = new Vision(hardwareMap, autoSide);
+
+        foundationGrabber = new FoundationGrabber(hardwareMap);
 
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;

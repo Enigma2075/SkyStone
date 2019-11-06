@@ -49,6 +49,8 @@ public class BlueAuto extends LinearOpMode {
         vision.init();
         vision.activate();
 
+        arm.moveKnocker(Arm.Position.UP, Arm.Side.RIGHT);
+
         waitForStart();
 
         if (isStopRequested()) return;
@@ -105,7 +107,7 @@ public class BlueAuto extends LinearOpMode {
             // Move to second SkyStone
             Trajectory moveToSkyStone2 = drive.trajectoryBuilder()
                     .lineTo(new Vector2d(40, -16), new LinearInterpolator(0, 0))
-                    .lineTo(new Vector2d(-16, -19), new LinearInterpolator(0, 0))
+                    .lineTo(new Vector2d(-18, -19), new LinearInterpolator(0, 0))
                     //.back(74)
                     .build();
             drive.followTrajectorySync(moveToSkyStone2);
@@ -127,7 +129,7 @@ public class BlueAuto extends LinearOpMode {
             // Move to second SkyStone
             Trajectory moveToSkyStone2 = drive.trajectoryBuilder()
                     .lineTo(new Vector2d(40, -16), new LinearInterpolator(0, 0))
-                    .lineTo(new Vector2d(-3, -19), new LinearInterpolator(0, 0))
+                    .lineTo(new Vector2d(-2, -19), new LinearInterpolator(0, 0))
                     //.back(74)
                     .build();
             drive.followTrajectorySync(moveToSkyStone2);
@@ -140,12 +142,12 @@ public class BlueAuto extends LinearOpMode {
         arm.moveToPosition(Arm.Position.UP, Arm.Side.LEFT);
 
         Trajectory moveFoundation = drive.trajectoryBuilder()
-                .lineTo(new Vector2d(90, -2), new LinearInterpolator(0, 0))
+                .lineTo(new Vector2d(90, 1), new LinearInterpolator(0, 0))
                 .build();
         drive.followTrajectorySync(moveFoundation);
 
         Trajectory park = drive.trajectoryBuilder()
-                .lineTo(new Vector2d(55, 0), new LinearInterpolator(0, 0))
+                .lineTo(new Vector2d(55, 1), new LinearInterpolator(0, 0))
                 .build();
         drive.followTrajectorySync(park);
 

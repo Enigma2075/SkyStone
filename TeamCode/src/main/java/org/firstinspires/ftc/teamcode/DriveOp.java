@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.arm.Arm;
+import org.firstinspires.ftc.teamcode.foundationGrabber.FoundationGrabber;
 import org.firstinspires.ftc.teamcode.intake.Intake;
 
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TICKS_PER_REV;
@@ -22,6 +23,8 @@ public class DriveOp extends LinearOpMode {
 
         robot.arm.moveToPosition(Arm.Position.HOLD, Arm.Side.RIGHT);
         robot.arm.moveToPosition(Arm.Position.HOLD, Arm.Side.LEFT);
+
+        robot.drivetrain.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         waitForStart();
 
@@ -55,15 +58,15 @@ public class DriveOp extends LinearOpMode {
             double r = -gamepad1.right_stick_x;
 
             robot.drivetrain.setDrivePower(new Pose2d(
-                    Math.signum(x) * (x * x),
-                    Math.signum(y) * y * x,
-                    Math.signum(r) *r * r
+                    Math.signum(x) * (Math.abs(x) * Math.abs(x) * Math.abs(x)) * .8,
+                    Math.signum(y) * (Math.abs(y) * Math.abs(y) * Math.abs(y)) * .8,
+                    Math.signum(r) * (Math.abs(r) * Math.abs(r) * Math.abs(r)) * .8
             ));
 
-            if(gamepad2.right_trigger > .8) {
+            if(gamepad2.right_trigger > .8 || gamepad1.right_trigger > .8) {
                 robot.intake.setMode(Intake.Mode.INTAKE);
             }
-            else if(gamepad2.left_trigger > .8) {
+            else if(gamepad2.left_trigger > .8 || gamepad1.left_trigger > .8) {
                 robot.intake.setMode(Intake.Mode.OUTTAKE);
             }
             else {
@@ -72,23 +75,40 @@ public class DriveOp extends LinearOpMode {
 
             if(gamepad2.a) {
                 if(!arms) {
+                    arms = true;
                     robot.arm.moveToPosition(Arm.Position.DOWN, Arm.Side.LEFT);
                     robot.arm.moveToPosition(Arm.Position.DOWN, Arm.Side.RIGHT);
                 }
             }
+            else if(gamepad2.y) {
+                arms = true;
+                robot.arm.moveToPosition(Arm.Position.CAP, Arm.Side.RIGHT);
+                robot.arm.moveToPosition(Arm.Position.CAP, Arm.Side.LEFT);
+                robot.arm.moveKnocker(Arm.Position.DOWN, Arm.Side.RIGHT);
+                robot.arm.moveKnocker(Arm.Position.DOWN, Arm.Side.LEFT);
+            }
             else {
                 if(arms) {
+                    arms = false;
                     robot.arm.moveToPosition(Arm.Position.HOLD, Arm.Side.LEFT);
                     robot.arm.moveToPosition(Arm.Position.HOLD, Arm.Side.RIGHT);
                 }
             }
 
-            if(gamepad2.right_bumper) {
+            if(gamepad2.right_bumper || gamepad1.right_bumper) {
                 robot.intake.setPivot(900);
             }
             else {
                 robot.intake.setPivot(0);
             }
+
+            if(gamepad2.b) {
+                robot.foundationGrabber.moveToPosition(FoundationGrabber.Position.DOWN);
+            }
+            else {
+                robot.foundationGrabber.moveToPosition(FoundationGrabber.Position.UP);
+            }
+
 
             telemetry.update();
         }

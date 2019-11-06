@@ -18,10 +18,19 @@ public class Arm {
     private Servo right;
     private Servo left;
 
+    private Servo knockerRight;
+    private Servo knockerLeft;
+
     public enum Side { RIGHT, LEFT}
 
+    private Position currentPositionRight = Position.UP;
+    private Position currentPositionLeft = Position.UP;
+
+    private Position currentPositionKnockerRight = Position.HOLD;
+    private Position currentPositionKnockerLeft = Position.HOLD;
+
     public enum Position {
-        UP(0.0), HOLD(.4), DOWN(1.0), DROP(.8);
+        UP(0.0), HOLD(.4), DOWN(1.0), DROP(.8), CAP(.6);
 
         private double numVal;
 
@@ -43,7 +52,13 @@ public class Arm {
         right = hardwareMap.servo.get("rightArm");
         left = hardwareMap.servo.get("leftArm");
 
+        knockerRight = hardwareMap.servo.get("rightKnocker");
+        knockerLeft = hardwareMap.servo.get("leftKnocker");
+
         left.setDirection(Servo.Direction.REVERSE);
+
+        knockerLeft.setPosition(.5);
+        knockerRight.setPosition(.2);
 
         left.setPosition(Position.UP.getNumVal());
         right.setPosition(Position.UP.getNumVal());
@@ -69,16 +84,53 @@ public class Arm {
         }
     }
 
-    public void moveToPosition(Position position, Side side) {
+    public void moveKnocker(Position position, Side side) {
         if(side == Side.RIGHT) {
-            right.setPosition(position.getNumVal());
+            if(currentPositionKnockerRight != position) {
+                currentPositionKnockerRight = position;
+
+                if(position == Position.HOLD) {
+                    knockerRight.setPosition(.3);
+                }
+                else if(position == Position.DOWN) {
+                    knockerRight.setPosition(.5);
+                }
+                else {
+                    knockerRight.setPosition(position.getNumVal());
+                }
+            }
         }
         else {
-            if(position == Position.HOLD) {
-                left.setPosition(.5);
+            if(currentPositionKnockerLeft != position) {
+                currentPositionKnockerLeft = position;
+                if (position == Position.HOLD) {
+                    knockerLeft.setPosition(0.2);
+                } else if (position == Position.DOWN) {
+                    knockerLeft.setPosition(position.getNumVal());
+                }
+                else {
+                    knockerLeft.setPosition(position.getNumVal());
+                }
             }
-            else {
-                left.setPosition(position.getNumVal());
+        }
+    }
+
+
+    public void moveToPosition(Position position, Side side) {
+        if(side == Side.RIGHT) {
+            if(currentPositionRight != position) {
+                currentPositionRight = position;
+                right.setPosition(position.getNumVal());
+            }
+        }
+        else {
+            if(currentPositionLeft != position) {
+                currentPositionLeft = position;
+                if (position == Position.HOLD) {
+                    left.setPosition(.43);
+                } else {
+                    left.setPosition(position.getNumVal());
+                }
             }
         }
     }

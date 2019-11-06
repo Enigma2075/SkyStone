@@ -49,11 +49,14 @@ public class RedAuto extends LinearOpMode {
         vision.init();
         vision.activate();
 
+        arm.moveKnocker(Arm.Position.UP, Arm.Side.LEFT);
+
         waitForStart();
 
         if (isStopRequested()) return;
 
         arm.moveToPosition(Arm.Position.HOLD, Arm.Side.RIGHT);
+        arm.moveKnocker(Arm.Position.UP, Arm.Side.LEFT);
 
         // Move so we are closer to the Stones
         Trajectory moveToSeeSkyStone = drive.trajectoryBuilder()
@@ -110,7 +113,7 @@ public class RedAuto extends LinearOpMode {
                     .build();
             drive.followTrajectorySync(moveToSkyStone2);
 
-            grabStone(-21, 5);
+            grabStone(-21, 4.5);
         }
         else if(skyStonePosition == SkyStonePosition.CENTER) {
             // Move to second SkyStone
@@ -121,7 +124,7 @@ public class RedAuto extends LinearOpMode {
                     .build();
             drive.followTrajectorySync(moveToSkyStone2);
 
-            grabStone(-15, 5);
+            grabStone(-15, 4.5);
         }
         else if(skyStonePosition == SkyStonePosition.BRIDGE) {
             // Move to second SkyStone
@@ -132,7 +135,7 @@ public class RedAuto extends LinearOpMode {
                     .build();
             drive.followTrajectorySync(moveToSkyStone2);
 
-            grabStone(-8, 5);
+            grabStone(-8, 4.5);
         }
 
         moveToFoundationAndDrop(10);
@@ -157,7 +160,8 @@ public class RedAuto extends LinearOpMode {
         arm.moveToPosition(Arm.Position.HOLD, Arm.Side.RIGHT);
 
         Trajectory park1 = drive.trajectoryBuilder()
-                .lineTo(new Vector2d(40, 20), new LinearInterpolator(0, 0))
+                //.lineTo(new Vector2d(40, 20), new LinearInterpolator(0, 0))
+                .lineTo(new Vector2d(40, 22), new LinearInterpolator(0, 0))
                 .build();
         drive.followTrajectorySync(park1);
     }
