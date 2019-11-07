@@ -82,6 +82,10 @@ public class Drivetrain extends MecanumDrive {
     private TrajectoryFollower follower;
 
     public Drivetrain(HardwareMap hardwareMap, SensorArray sensorArray) {
+        this(hardwareMap, sensorArray, false);
+    }
+
+    public Drivetrain(HardwareMap hardwareMap, SensorArray sensorArray, boolean defaultLocalizer) {
         super(kV, kA, kStatic, TRACK_WIDTH);
 
         this.sensorArray = sensorArray;
@@ -132,7 +136,9 @@ public class Drivetrain extends MecanumDrive {
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
-        setLocalizer(new TwoWheelLocalizer(hardwareMap, sensorArray)); //new StandardTrackingWheelLocalizer(hardwareMap));
+        if(!defaultLocalizer) {
+            setLocalizer(new TwoWheelLocalizer(hardwareMap, sensorArray)); //new StandardTrackingWheelLocalizer(hardwareMap));
+        }
 
         this.hardwareMap = hardwareMap;
     }
