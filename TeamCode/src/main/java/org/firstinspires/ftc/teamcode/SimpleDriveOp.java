@@ -15,8 +15,8 @@ import org.firstinspires.ftc.teamcode.sensors.SensorArray;
 public class SimpleDriveOp extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        SensorArray sensorArray = new SensorArray(hardwareMap);
-        Drivetrain drive = new Drivetrain(hardwareMap, sensorArray, false);
+        //SensorArray sensorArray = new SensorArray(hardwareMap);
+        Drivetrain drive = new Drivetrain(hardwareMap, null, false);
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
