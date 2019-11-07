@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.foundationGrabber.FoundationGrabber;
 import org.firstinspires.ftc.teamcode.intake.Intake;
 import org.firstinspires.ftc.teamcode.sensors.SensorArray;
 
-@TeleOp(name="DriveOp", group="Basic")
+@TeleOp(group="Basic")
 public class SimpleDriveOp extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
