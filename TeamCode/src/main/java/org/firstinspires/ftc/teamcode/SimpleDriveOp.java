@@ -16,7 +16,7 @@ public class SimpleDriveOp extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         //SensorArray sensorArray = new SensorArray(hardwareMap);
-        Drivetrain drive = new Drivetrain(hardwareMap, null, false);
+        Drivetrain drive = new Drivetrain(hardwareMap, null, true);
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -29,9 +29,9 @@ public class SimpleDriveOp extends LinearOpMode {
             double r = -gamepad1.right_stick_x;
 
             drive.setDrivePower(new Pose2d(
-                    Math.signum(x) * (Math.abs(x) * Math.abs(x) * Math.abs(x)) * .8,
-                    Math.signum(y) * (Math.abs(y) * Math.abs(y) * Math.abs(y)) * .8,
-                    Math.signum(r) * (Math.abs(r) * Math.abs(r) * Math.abs(r)) * .8
+                    Math.signum(x) * (Math.abs(x) * Math.abs(x) * Math.abs(x)) * .6,
+                    Math.signum(y) * (Math.abs(y) * Math.abs(y) * Math.abs(y)) * .6,
+                    Math.signum(r) * (Math.abs(r) * Math.abs(r) * Math.abs(r)) * .6
             ));
 
             telemetry.update();

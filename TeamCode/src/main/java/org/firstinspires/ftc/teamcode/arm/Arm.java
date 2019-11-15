@@ -75,7 +75,7 @@ public class Arm {
                 timeout = .5;
                 break;
             case DOWN:
-                timeout = 1.25;
+                timeout = .75;
                 break;
             case DROP:
                 timeout = .15;
@@ -90,27 +90,39 @@ public class Arm {
                 currentPositionKnockerRight = position;
 
                 if(position == Position.HOLD) {
-                    knockerRight.setPosition(.3);
-                }
-                else if(position == Position.DOWN) {
+                    //knockerRight.setPosition(.3);
                     knockerRight.setPosition(.5);
                 }
+                else if(position == Position.DOWN) {
+                    //knockerRight.setPosition(.5);
+                    knockerRight.setPosition(1);
+                }
                 else {
-                    knockerRight.setPosition(position.getNumVal());
+                    knockerRight.setPosition(0);
+                    //knockerRight.setPosition(position.getNumVal());
                 }
             }
         }
         else {
             if(currentPositionKnockerLeft != position) {
                 currentPositionKnockerLeft = position;
-                if (position == Position.HOLD) {
-                    knockerLeft.setPosition(0.2);
-                } else if (position == Position.DOWN) {
-                    knockerLeft.setPosition(position.getNumVal());
+                if(position == Position.HOLD) {
+                    knockerLeft.setPosition(.5);
+                }
+                else if(position == Position.DROP) {
+                    knockerLeft.setPosition(0);
                 }
                 else {
-                    knockerLeft.setPosition(position.getNumVal());
+                    knockerLeft.setPosition(1);
                 }
+                //if (position == Position.HOLD) {
+                //    knockerLeft.setPosition(0.2);
+                //} else if (position == Position.DOWN) {
+                //    knockerLeft.setPosition(position.getNumVal());
+                //}
+                //else {
+                //    knockerLeft.setPosition(position.getNumVal());
+                //}
             }
         }
     }

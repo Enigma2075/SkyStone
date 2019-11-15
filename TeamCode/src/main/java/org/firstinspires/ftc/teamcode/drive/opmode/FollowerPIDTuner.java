@@ -11,8 +11,8 @@ import org.firstinspires.ftc.teamcode.drive.Drivetrain;
 import org.firstinspires.ftc.teamcode.sensors.SensorArray;
 
 /*
- * Op mode for tuning follower PID coefficients. The robot drives in a DISTANCE-by-DISTANCE square
- * indefinitely.
+ * Op mode for tuning follower PID coefficients (located in the drive base classes). The robot
+ * drives in a DISTANCE-by-DISTANCE square indefinitely.
  */
 @Config
 @Autonomous(group = "drive")

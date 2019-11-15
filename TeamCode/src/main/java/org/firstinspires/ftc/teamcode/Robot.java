@@ -95,13 +95,16 @@ public class Robot {
     }
 
     public void grabStone(Arm.Side side) {
+        arm.moveKnocker(Arm.Position.UP, side);
         arm.moveToPositionSync(Arm.Position.DOWN, side);
         arm.moveToPositionSync(Arm.Position.HOLD, side);
+        arm.moveKnocker(Arm.Position.HOLD, side);
     }
 
     public void dropStone(Arm.Side side) {
-        arm.moveToPositionSync(Arm.Position.DROP, side);
-        arm.moveToPosition(Arm.Position.HOLD, side);
+        //arm.moveToPositionSync(Arm.Position.DROP, side);
+        //arm.moveToPosition(Arm.Position.HOLD, side);
+        arm.moveKnocker(Arm.Position.DROP, side);
     }
 
     public void stop() {
