@@ -41,7 +41,7 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  */
 @Config
 @Autonomous(group = "drive")
-@Disabled
+//@Disabled
 public class DriveVelocityPIDTuner extends LinearOpMode {
     public static double DISTANCE = 72;
 
@@ -139,7 +139,7 @@ public class DriveVelocityPIDTuner extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
         Robot robot = new Robot(hardwareMap, telemetry);
-        Drivetrain drive = robot.drivetrain;
+        drive = robot.drivetrain;
         sensorArray = robot.sensorArray;
 
         addPidVariable();

@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.path.heading.ConstantInterpolator;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -66,45 +68,59 @@ public class Robot {
         leftDist = hardwareMap.get(Rev2mDistanceSensor.class, "leftDistance");
     }
 
-    public void moveToDistance(double targetDistance) {
+    public void moveToDistance(double x, double targetDistance) {
 
         Rev2mDistanceSensor distSensor = leftDist;
-        double power = .2;
+        //double power = .2;
         if(autoSide == AutoSide.BLUE) {
-            power = -power;
+        //    power = -power;
             distSensor = rightDist;
         }
 
-        double dist = distSensor.getDistance(DistanceUnit.INCH);
+        double dist = distSensor.getDistance(DistanceUnit.INCH) - targetDistance;
 
-        while(!Thread.currentThread().isInterrupted() && dist > targetDistance) {
+        double y = drivetrain.getPoseEstimate().getY();
+        double yTarget = y - dist;
+        if(autoSide == AutoSide.RED) {
+            yTarget = y + dist;
+        }
 
-            drivetrain.setDrivePower(new Pose2d(
-                    0,
-                    power,
-                    0
-            ));
+        Trajectory moveToCenterSkyStone = drivetrain.trajectoryBuilder()
+                .lineTo(new Vector2d( x,yTarget), new ConstantInterpolator(0))
+                .build();
+        drivetrain.followTrajectorySync(moveToCenterSkyStone);
+
+
+        //while(!Thread.currentThread().isInterrupted() && dist > targetDistance) {
+
+            //drivetrain.setDrivePower(new Pose2d(
+            //        0,
+            //        power,
+            //        0
+            //));
 
             //sensorArray.clearRead();
             //drivetrain.update();
-            dist = distSensor.getDistance(DistanceUnit.INCH);
-            telemetry.addData("Dist", dist);
-            telemetry.update();
-        }
-        drivetrain.stop();
+            //dist = distSensor.getDistance(DistanceUnit.INCH);
+
+
+            //telemetry.addData("Dist", dist);
+            //telemetry.update();
+        //}
+        //drivetrain.stop();
     }
 
     public void grabStone(Arm.Side side) {
-        arm.moveKnocker(Arm.Position.UP, side);
+        arm.setRoller(Arm.RollerMode.IN, side);
         arm.moveToPositionSync(Arm.Position.DOWN, side);
         arm.moveToPositionSync(Arm.Position.HOLD, side);
-        arm.moveKnocker(Arm.Position.HOLD, side);
+        //arm.setRoller(Arm.RollerMode.STOP, side);
     }
 
     public void dropStone(Arm.Side side) {
         //arm.moveToPositionSync(Arm.Position.DROP, side);
         //arm.moveToPosition(Arm.Position.HOLD, side);
-        arm.moveKnocker(Arm.Position.DROP, side);
+        arm.setRoller(Arm.RollerMode.OUT, side);
     }
 
     public void stop() {

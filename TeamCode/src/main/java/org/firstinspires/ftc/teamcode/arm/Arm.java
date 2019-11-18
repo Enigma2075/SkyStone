@@ -3,10 +3,10 @@ package org.firstinspires.ftc.teamcode.arm;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.util.NanoClock;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-
-import org.firstinspires.ftc.teamcode.Robot;
 
 @Config
 public class Arm {
@@ -18,28 +18,59 @@ public class Arm {
     private Servo right;
     private Servo left;
 
-    private Servo knockerRight;
-    private Servo knockerLeft;
+    private CRServo rightRoller;
+    private CRServo leftRoller;
 
     public enum Side { RIGHT, LEFT}
 
     private Position currentPositionRight = Position.UP;
     private Position currentPositionLeft = Position.UP;
 
-    private Position currentPositionKnockerRight = Position.HOLD;
-    private Position currentPositionKnockerLeft = Position.HOLD;
+    private RollerMode currentRollerModeRight = RollerMode.STOP;
+    private RollerMode currentRollerModeLeft = RollerMode.STOP;
 
-    public enum Position {
-        UP(0.0), HOLD(.4), DOWN(1.0), DROP(.8), CAP(.6);
+    public enum RollerMode {
+        IN(.2),
+        OUT(-1),
+        STOP(0);
 
-        private double numVal;
+        private double val;
 
-        Position(double numVal) {
-            this.numVal = numVal;
+        RollerMode(double val) {
+            this.val = val;
         }
 
-        public double getNumVal() {
-            return numVal;
+        public double getVal() {
+            return val;
+        }
+    }
+
+    public enum Position {
+        UP(0.0, 0.0, 1.0),
+        HOLD(.4, .4, .5),
+        READY(.6, .6, 1.0),
+        DOWN(1.0, 1.0, .25),
+        DROP(.8, .8, 1.0),
+        CAP(.6, .6, 1.0);
+
+        private double rightPos;
+        private double leftPos;
+        private double timeout;
+
+        Position(double leftPos, double rightPos, double timeout) {
+            this.leftPos = leftPos;
+            this.rightPos = rightPos;
+            this.timeout = timeout;
+        }
+
+        public double getLeftPos() {
+            return leftPos;
+        }
+        public double getRightPos() {
+            return rightPos;
+        }
+        public double getTimeout() {
+            return timeout;
         }
     }
 
@@ -52,77 +83,37 @@ public class Arm {
         right = hardwareMap.servo.get("rightArm");
         left = hardwareMap.servo.get("leftArm");
 
-        knockerRight = hardwareMap.servo.get("rightKnocker");
-        knockerLeft = hardwareMap.servo.get("leftKnocker");
+        rightRoller = hardwareMap.crservo.get("rightArmRoller");
+        leftRoller = hardwareMap.crservo.get("leftArmRoller");
 
         left.setDirection(Servo.Direction.REVERSE);
+        rightRoller.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        knockerLeft.setPosition(.5);
-        knockerRight.setPosition(.2);
+        leftRoller.setPower(RollerMode.STOP.getVal());
+        rightRoller.setPower(RollerMode.STOP.getVal());
 
-        left.setPosition(Position.UP.getNumVal());
-        right.setPosition(Position.UP.getNumVal());
+        left.setPosition(Position.UP.getLeftPos());
+        right.setPosition(Position.UP.getRightPos());
     }
 
     public void waitForMovement(Position position) {
         double start = clock.seconds();
 
-        double timeout = 1;
-
-        switch (position) {
-            case UP:
-            case HOLD:
-                timeout = .5;
-                break;
-            case DOWN:
-                timeout = .75;
-                break;
-            case DROP:
-                timeout = .15;
-        }
-        while (!Thread.currentThread().isInterrupted() && clock.seconds() - start < timeout) {
+        while (!Thread.currentThread().isInterrupted() && clock.seconds() - start < position.getTimeout()) {
         }
     }
 
-    public void moveKnocker(Position position, Side side) {
+    public void setRoller(RollerMode mode, Side side) {
         if(side == Side.RIGHT) {
-            if(currentPositionKnockerRight != position) {
-                currentPositionKnockerRight = position;
-
-                if(position == Position.HOLD) {
-                    //knockerRight.setPosition(.3);
-                    knockerRight.setPosition(.5);
-                }
-                else if(position == Position.DOWN) {
-                    //knockerRight.setPosition(.5);
-                    knockerRight.setPosition(1);
-                }
-                else {
-                    knockerRight.setPosition(0);
-                    //knockerRight.setPosition(position.getNumVal());
-                }
+            if(currentRollerModeRight != mode) {
+                currentRollerModeRight = mode;
+                rightRoller.setPower(mode.getVal());
             }
         }
         else {
-            if(currentPositionKnockerLeft != position) {
-                currentPositionKnockerLeft = position;
-                if(position == Position.HOLD) {
-                    knockerLeft.setPosition(.5);
-                }
-                else if(position == Position.DROP) {
-                    knockerLeft.setPosition(0);
-                }
-                else {
-                    knockerLeft.setPosition(1);
-                }
-                //if (position == Position.HOLD) {
-                //    knockerLeft.setPosition(0.2);
-                //} else if (position == Position.DOWN) {
-                //    knockerLeft.setPosition(position.getNumVal());
-                //}
-                //else {
-                //    knockerLeft.setPosition(position.getNumVal());
-                //}
+            if(currentRollerModeLeft != mode) {
+                currentRollerModeLeft = mode;
+                leftRoller.setPower(mode.getVal());
             }
         }
     }
@@ -132,17 +123,13 @@ public class Arm {
         if(side == Side.RIGHT) {
             if(currentPositionRight != position) {
                 currentPositionRight = position;
-                right.setPosition(position.getNumVal());
+                right.setPosition(position.getRightPos());
             }
         }
         else {
             if(currentPositionLeft != position) {
                 currentPositionLeft = position;
-                if (position == Position.HOLD) {
-                    left.setPosition(.43);
-                } else {
-                    left.setPosition(position.getNumVal());
-                }
+                left.setPosition(position.getLeftPos());
             }
         }
     }
@@ -153,6 +140,8 @@ public class Arm {
     }
 
     public void stop() {
+        setRoller(RollerMode.STOP, Side.RIGHT);
+        setRoller(RollerMode.STOP, Side.LEFT);
         moveToPosition(Position.HOLD, Side.RIGHT);
         moveToPosition(Position.HOLD, Side.LEFT);
     }

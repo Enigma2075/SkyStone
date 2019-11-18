@@ -36,7 +36,7 @@ public class DriveConstants {
      * MOTOR_VELO_PID with the tuned coefficients from DriveVelocityPIDTuner.
      */
     public static final boolean RUN_USING_ENCODER = true;
-    public static final PIDCoefficients MOTOR_VELO_PID = null;
+    public static final PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(3.5, 3, .1);
 
     /*
      * These are physical constants that can be determined from your robot (including the track
@@ -48,7 +48,7 @@ public class DriveConstants {
      */
     public static double WHEEL_RADIUS = 75.0 / 25.4 / 2.0;
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 15.6;
+    public static double TRACK_WIDTH = 12.56;
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -59,7 +59,7 @@ public class DriveConstants {
     //public static double kV = .01974; // / rpmToVelocity(getMaxRpm());
     //public static double kA = 0.00029;
     //public static double kStatic = .04192;
-    public static double kV = 1 / rpmToVelocity(getMaxRpm());
+    public static double kV = 1.0 / rpmToVelocity(getMaxRpm());
     public static double kA = 0.0;
     public static double kStatic = 0.0;
 
@@ -72,8 +72,8 @@ public class DriveConstants {
      * forces acceleration-limited profiling).
      */
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
-            50, 40, 0.01,
-            Math.toRadians(180.0), Math.toRadians(180.0), 0.0
+            45, 35, 0.0,
+            Math.toRadians(180.0), Math.toRadians(120.0), 0.0
     );
 
 
@@ -97,6 +97,6 @@ public class DriveConstants {
 
     public static double getMotorVelocityF() {
         // see https://docs.google.com/document/d/1tyWrXDfMidwYyP_5H4mZyVgaEswhOC35gvdmP-V-5hA/edit#heading=h.61g9ixenznbx
-        return 32767 / getTicksPerSec();
+        return 32767.0 / getTicksPerSec();
     }
 }

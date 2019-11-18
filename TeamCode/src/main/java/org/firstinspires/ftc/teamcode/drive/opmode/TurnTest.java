@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.sensors.SensorArray;
  */
 @Config
 @Autonomous(group = "drive")
-@Disabled
+//@Disabled
 public class TurnTest extends LinearOpMode {
     public static double ANGLE = 90; // deg
 

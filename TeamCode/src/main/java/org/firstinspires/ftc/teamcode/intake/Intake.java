@@ -40,14 +40,14 @@ public class Intake {
 
         pivot = hardwareMap.dcMotor.get("pivot");
         startingPos = pivot.getCurrentPosition();
-        currentTarget = startingPos;
+        currentTarget = 0;
         pivot.setTargetPosition(currentTarget);
         pivot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         pivot.setPower(.8);
     }
 
     public void setPivot(int target) {
-        if(currentTarget != startingPos + target) {
+        if(currentTarget != target) {
             pivot.setTargetPosition(startingPos + target);
             currentTarget = target;
         }

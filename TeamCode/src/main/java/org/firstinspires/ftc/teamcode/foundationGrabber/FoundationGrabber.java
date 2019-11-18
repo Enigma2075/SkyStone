@@ -6,6 +6,8 @@ import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.arm.Arm;
+
 @Config
 public class FoundationGrabber {
     private HardwareMap hardwareMap;
@@ -13,12 +15,14 @@ public class FoundationGrabber {
     private FtcDashboard dashboard;
     private NanoClock clock;
 
-    private Servo grabber;
+    private Servo grabberRight;
+    private Servo grabberLeft;
 
-    private Position currenPosition = Position.UP;
+    private Position currentPositionRight = Position.UP;
+    private Position currentPositionLeft = Position.UP;
 
     public enum Position {
-        UP(0.0), DOWN(1.0);
+        UP(0.0), DOWN(1.0), READY(.25);
 
         private double numVal;
 
@@ -37,11 +41,13 @@ public class FoundationGrabber {
 
         this.hardwareMap = hardwareMap;
 
-        grabber = hardwareMap.servo.get("grabber");
+        grabberRight = hardwareMap.servo.get("rightGrabber");
+        grabberLeft = hardwareMap.servo.get("leftGrabber");
 
-        grabber.setDirection(Servo.Direction.REVERSE);
+        grabberLeft.setDirection(Servo.Direction.REVERSE);
 
-        grabber.setPosition(Position.UP.getNumVal());
+        grabberRight.setPosition(Position.UP.getNumVal());
+        grabberLeft.setPosition(Position.UP.getNumVal());
     }
 
     public void waitForMovement(Position position) {
@@ -59,20 +65,28 @@ public class FoundationGrabber {
         }
     }
 
-    public void moveToPosition(Position position) {
-        if(currenPosition != position) {
-            currenPosition = position;
-            grabber.setPosition(position.getNumVal());
+    public void moveToPosition(Position position, Arm.Side side) {
+        if(side == Arm.Side.RIGHT) {
+            if (currentPositionRight != position) {
+                currentPositionRight = position;
+                grabberRight.setPosition(position.getNumVal());
+            }
+        }
+        else {
+            if(currentPositionLeft != position) {
+                currentPositionLeft = position;
+                grabberLeft.setPosition(position.getNumVal());
+            }
         }
     }
 
-    public void moveToPositionSync(Position position) {
-        moveToPosition(position);
+    public void moveToPositionSync(Position position, Arm.Side side) {
+        moveToPosition(position, side);
         waitForMovement(position);
     }
 
     public void stop() {
-        moveToPosition(Position.UP);
-        moveToPosition(Position.UP);
+        moveToPosition(Position.UP, Arm.Side.RIGHT);
+        moveToPosition(Position.UP, Arm.Side.LEFT);
     }
 }

@@ -16,9 +16,9 @@ import org.firstinspires.ftc.teamcode.sensors.SensorArray;
  */
 @Config
 @Autonomous(group = "drive")
-@Disabled
+//@Disabled
 public class FollowerPIDTuner extends LinearOpMode {
-    public static double DISTANCE = 70;
+    public static double DISTANCE = 40;
 
     @Override
     public void runOpMode() throws InterruptedException {

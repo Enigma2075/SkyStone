@@ -41,7 +41,7 @@ public class TwoWheelLocalizer extends TwoTrackingWheelLocalizer {
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
     public static double LATERAL_DISTANCE = 7.0; // in; distance between the left and right wheels
-    public static double FORWARD_OFFSET = 7.375; // in; offset of the lateral wheel
+    public static double FORWARD_OFFSET = 6; // in; offset of the lateral wheel
 
     private SensorArray sensorArray;
 

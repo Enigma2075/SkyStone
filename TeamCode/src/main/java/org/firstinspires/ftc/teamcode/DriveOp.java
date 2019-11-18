@@ -78,8 +78,8 @@ public class DriveOp extends LinearOpMode {
                 arms = true;
                 robot.arm.moveToPosition(Arm.Position.CAP, Arm.Side.RIGHT);
                 robot.arm.moveToPosition(Arm.Position.CAP, Arm.Side.LEFT);
-                robot.arm.moveKnocker(Arm.Position.DOWN, Arm.Side.RIGHT);
-                robot.arm.moveKnocker(Arm.Position.DOWN, Arm.Side.LEFT);
+                robot.arm.setRoller(Arm.RollerMode.OUT, Arm.Side.RIGHT);
+                robot.arm.setRoller(Arm.RollerMode.OUT, Arm.Side.LEFT);
             }
             else {
                 if(arms) {
@@ -90,17 +90,17 @@ public class DriveOp extends LinearOpMode {
             }
 
             if(gamepad2.right_bumper || gamepad1.right_bumper) {
-                robot.intake.setPivot(900);
+                robot.intake.setPivot(-900);
             }
             else {
                 robot.intake.setPivot(0);
             }
 
             if(gamepad2.b) {
-                robot.foundationGrabber.moveToPosition(FoundationGrabber.Position.DOWN);
+                robot.foundationGrabber.moveToPosition(FoundationGrabber.Position.DOWN, Arm.Side.RIGHT);
             }
             else {
-                robot.foundationGrabber.moveToPosition(FoundationGrabber.Position.UP);
+                robot.foundationGrabber.moveToPosition(FoundationGrabber.Position.UP, Arm.Side.RIGHT);
             }
 
 

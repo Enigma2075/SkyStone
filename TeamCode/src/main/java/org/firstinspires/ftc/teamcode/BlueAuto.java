@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.arm.Arm;
 import org.firstinspires.ftc.teamcode.drive.Drivetrain;
+import org.firstinspires.ftc.teamcode.foundationGrabber.FoundationGrabber;
 import org.firstinspires.ftc.teamcode.vision.Vision;
 
 /*
@@ -22,6 +23,7 @@ public class BlueAuto extends LinearOpMode {
     Drivetrain drive = null;
     Arm arm = null;
     Vision vision = null;
+    FoundationGrabber grabber = null;
 
     public enum SkyStonePosition {
         WALL(0), CENTER(8), BRIDGE(17);
@@ -43,13 +45,12 @@ public class BlueAuto extends LinearOpMode {
         drive = robot.drivetrain;
         arm = robot.arm;
         vision = robot.vision;
+        grabber = robot.foundationGrabber;
 
         SkyStonePosition skyStonePosition = SkyStonePosition.BRIDGE;
 
         vision.init();
         vision.activate();
-
-        arm.moveKnocker(Arm.Position.UP, Arm.Side.RIGHT);
 
         waitForStart();
 
@@ -93,10 +94,10 @@ public class BlueAuto extends LinearOpMode {
         // Disable Tracking when we are done;
         vision.deactivate();
 
-        Trajectory moveToCenterSkyStone = drive.trajectoryBuilder()
-                .lineTo(new Vector2d( skyStonePosition.getNumVal() + 2,-19), new ConstantInterpolator(0))
-                .build();
-        drive.followTrajectorySync(moveToCenterSkyStone);
+        //Trajectory moveToCenterSkyStone = drive.trajectoryBuilder()
+        //        .lineTo(new Vector2d( skyStonePosition.getNumVal() + 2,-19), new ConstantInterpolator(0))
+        //        .build();
+        //drive.followTrajectorySync(moveToCenterSkyStone);
 
         grabStone(skyStonePosition.getNumVal() + 2, 5);
 
@@ -141,10 +142,14 @@ public class BlueAuto extends LinearOpMode {
 
         arm.moveToPosition(Arm.Position.UP, Arm.Side.LEFT);
 
+        grabber.moveToPositionSync(FoundationGrabber.Position.DOWN, Arm.Side.RIGHT);
+
         Trajectory moveFoundation = drive.trajectoryBuilder()
                 .lineTo(new Vector2d(90, 1), new LinearInterpolator(0, 0))
                 .build();
         drive.followTrajectorySync(moveFoundation);
+
+        grabber.moveToPosition(FoundationGrabber.Position.UP, Arm.Side.RIGHT);
 
         Trajectory park = drive.trajectoryBuilder()
                 .lineTo(new Vector2d(55, 1), new LinearInterpolator(0, 0))
@@ -167,7 +172,7 @@ public class BlueAuto extends LinearOpMode {
     private void grabStone(double x, double distance) {
         // Grab Sky Stone
 
-        robot.moveToDistance(distance);
+        robot.moveToDistance(x, distance);
         robot.grabStone(Arm.Side.RIGHT);
     }
 
