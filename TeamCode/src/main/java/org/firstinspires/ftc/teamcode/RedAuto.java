@@ -56,7 +56,6 @@ public class RedAuto extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        arm.moveToPosition(Arm.Position.HOLD, Arm.Side.RIGHT);
 
         // Move so we are closer to the Stones
         Trajectory moveToSeeSkyStone = drive.trajectoryBuilder()
@@ -64,6 +63,8 @@ public class RedAuto extends LinearOpMode {
                 .build();
 
         drive.followTrajectorySync(moveToSeeSkyStone);
+
+        arm.moveToPosition(Arm.Position.HOLD, Arm.Side.RIGHT);
 
         boolean found = findObject();
 
@@ -163,25 +164,25 @@ public class RedAuto extends LinearOpMode {
             grabStone(SkyStonePosition.CENTER.getNumVal() + 2, 5);
         }
 
-            grabber.moveToPosition(FoundationGrabber.Position.READY, Arm.Side.LEFT);
+        grabber.moveToPosition(FoundationGrabber.Position.READY, Arm.Side.LEFT);
 
         moveToFoundationAndDrop(10, 2);
 
-        grabber.moveToPosition(FoundationGrabber.Position.DOWN, Arm.Side.LEFT);
+        grabber.moveToPositionSync(FoundationGrabber.Position.DOWN, Arm.Side.LEFT);
 
         arm.moveToPosition(Arm.Position.UP, Arm.Side.RIGHT);
 
         Trajectory moveFoundation = drive.trajectoryBuilder()
-                .lineTo(new Vector2d(95, 1.5), new LinearInterpolator(0, 0))
+                .lineTo(new Vector2d(60, 15), new LinearInterpolator(0, Math.toRadians(-90)))
                 .build();
         drive.followTrajectorySync(moveFoundation);
 
         grabber.moveToPosition(FoundationGrabber.Position.UP, Arm.Side.LEFT);
 
         Trajectory park = drive.trajectoryBuilder()
-                .lineTo(new Vector2d(65, 1.5), new LinearInterpolator(0, 0))
+                //.lineTo(new Vector2d(65, 1.5), new LinearInterpolator(0, 0))
                 //.lineTo(new Vector2d(55, 20), new LinearInterpolator(0, 0))
-                .lineTo(new Vector2d(40, 24), new ConstantInterpolator(0))
+                .lineTo(new Vector2d(40, 24), new ConstantInterpolator(Math.toRadians(-90)))
                 .build();
         drive.followTrajectorySync(park);
 
