@@ -53,7 +53,7 @@ public class Arm {
 
     public enum Position {
         UP(0.0, 0.0, 1.0),
-        HOLD(.4, .4, .5),
+        HOLD(.4, .33, .5),
         READY(.7, .62, 1.0),
         DOWN(1.0, 1.0, .25 ),
         DROP1(.58, .54, 1.0),
