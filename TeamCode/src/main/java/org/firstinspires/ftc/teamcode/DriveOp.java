@@ -18,7 +18,7 @@ public class DriveOp extends LinearOpMode {
         robot.arm.moveToPosition(Arm.Position.HOLD, Arm.Side.RIGHT);
         robot.arm.moveToPosition(Arm.Position.HOLD, Arm.Side.LEFT);
 
-        robot.drivetrain.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //robot.drivetrain.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         waitForStart();
 
@@ -30,6 +30,7 @@ public class DriveOp extends LinearOpMode {
         boolean arms = false;
 
         while(opModeIsActive()) {
+            robot.sensorArray.clearRead();
             //double currentRpm = (((currentPosition - robot.drivetrain.getEncoder()) / TICKS_PER_REV) / (startTime - getRuntime())) * 60.0;
 
             //if(currentRpm > rpm) {
@@ -52,9 +53,9 @@ public class DriveOp extends LinearOpMode {
             double r = -gamepad1.right_stick_x;
 
             robot.drivetrain.setDrivePower(new Pose2d(
-                    Math.signum(x) * (Math.abs(x) * Math.abs(x) * Math.abs(x)) * .8,
-                    Math.signum(y) * (Math.abs(y) * Math.abs(y) * Math.abs(y)) * .8,
-                    Math.signum(r) * (Math.abs(r) * Math.abs(r) * Math.abs(r)) * .8
+                    Math.signum(x) * (Math.abs(x) * Math.abs(x) * Math.abs(x)) * .6,
+                    Math.signum(y) * (Math.abs(y) * Math.abs(y) * Math.abs(y)) * .6,
+                    Math.signum(r) * (Math.abs(r) * Math.abs(r) * Math.abs(r)) * .05
             ));
 
             if(gamepad2.right_trigger > .8 || gamepad1.right_trigger > .8) {
@@ -70,22 +71,26 @@ public class DriveOp extends LinearOpMode {
             if(gamepad2.a) {
                 if(!arms) {
                     arms = true;
-                    robot.arm.moveToPosition(Arm.Position.DOWN, Arm.Side.LEFT);
-                    robot.arm.moveToPosition(Arm.Position.DOWN, Arm.Side.RIGHT);
+                    robot.arm.moveToPosition(Arm.Position.HOLD, Arm.Side.LEFT);
+                    robot.arm.moveToPosition(Arm.Position.HOLD, Arm.Side.RIGHT);
+                    robot.arm.setRoller(Arm.RollerMode.CLOSE, Arm.Side.RIGHT);
+                    robot.arm.setRoller(Arm.RollerMode.CLOSE, Arm.Side.LEFT);
                 }
             }
             else if(gamepad2.y) {
                 arms = true;
                 robot.arm.moveToPosition(Arm.Position.CAP, Arm.Side.RIGHT);
                 robot.arm.moveToPosition(Arm.Position.CAP, Arm.Side.LEFT);
-                robot.arm.setRoller(Arm.RollerMode.CLOSE, Arm.Side.RIGHT);
-                robot.arm.setRoller(Arm.RollerMode.CLOSE, Arm.Side.LEFT);
+                robot.arm.setRoller(Arm.RollerMode.OPEN, Arm.Side.RIGHT);
+                robot.arm.setRoller(Arm.RollerMode.OPEN, Arm.Side.LEFT);
             }
             else {
                 if(arms) {
                     arms = false;
                     robot.arm.moveToPosition(Arm.Position.HOLD, Arm.Side.LEFT);
                     robot.arm.moveToPosition(Arm.Position.HOLD, Arm.Side.RIGHT);
+                    robot.arm.setRoller(Arm.RollerMode.CLOSE, Arm.Side.RIGHT);
+                    robot.arm.setRoller(Arm.RollerMode.CLOSE, Arm.Side.LEFT);
                 }
             }
 
