@@ -88,7 +88,8 @@ public class Arm {
         leftRoller = hardwareMap.servo.get("leftArmRoller");
 
         left.setDirection(Servo.Direction.REVERSE);
-        
+        rightRoller.setDirection(Servo.Direction.REVERSE);
+
         leftRoller.setPosition(RollerMode.CLOSE.getVal());
         rightRoller.setPosition(RollerMode.CLOSE.getVal());
 
