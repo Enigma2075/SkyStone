@@ -27,7 +27,7 @@ import org.firstinspires.ftc.teamcode.sensors.SensorArray;
  */
 @Config
 @Autonomous(group = "drive")
-//@Disabled
+@Disabled
 public class TrackWidthTuner extends LinearOpMode {
     public static double ANGLE = 180;
     public static int NUM_TRIALS = 5;

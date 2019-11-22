@@ -174,6 +174,7 @@ public class Vision {
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
 
+
         /**  Let all the trackable listeners know where the phone is.  */
         for (VuforiaTrackable trackable : allTrackables) {
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
@@ -255,5 +256,6 @@ public class Vision {
 
     public void deactivate() {
         targetsSkyStone.deactivate();
+        targetsSkyStone.getLocalizer().getCamera().close();
     }
 }

@@ -18,21 +18,21 @@ public class Arm {
     private Servo right;
     private Servo left;
 
-    private CRServo rightRoller;
-    private CRServo leftRoller;
+    private Servo rightRoller;
+    private Servo leftRoller;
 
     public enum Side { RIGHT, LEFT}
 
     private Position currentPositionRight = Position.UP;
     private Position currentPositionLeft = Position.UP;
 
-    private RollerMode currentRollerModeRight = RollerMode.STOP;
-    private RollerMode currentRollerModeLeft = RollerMode.STOP;
+    private RollerMode currentRollerModeRight = RollerMode.CLOSE;
+    private RollerMode currentRollerModeLeft = RollerMode.CLOSE;
 
     public enum RollerMode {
-        IN(.2),
-        OUT(-1),
-        STOP(0);
+        CLOSE(1),
+        READY(.5),
+        OPEN(.7);
 
         private double val;
 
@@ -48,9 +48,10 @@ public class Arm {
     public enum Position {
         UP(0.0, 0.0, 1.0),
         HOLD(.4, .4, .5),
-        READY(.6, .6, 1.0),
-        DOWN(1.0, 1.0, .25),
-        DROP(.8, .8, 1.0),
+        READY(.7, .7, 1.0),
+        DOWN(1.0, 1.0, .25 ),
+        DROP1(.58, .58, 1.0),
+        DROP2(.55, .55, 1.0),
         CAP(.6, .6, 1.0);
 
         private double rightPos;
@@ -83,14 +84,13 @@ public class Arm {
         right = hardwareMap.servo.get("rightArm");
         left = hardwareMap.servo.get("leftArm");
 
-        rightRoller = hardwareMap.crservo.get("rightArmRoller");
-        leftRoller = hardwareMap.crservo.get("leftArmRoller");
+        rightRoller = hardwareMap.servo.get("rightArmRoller");
+        leftRoller = hardwareMap.servo.get("leftArmRoller");
 
         left.setDirection(Servo.Direction.REVERSE);
-        rightRoller.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        leftRoller.setPower(RollerMode.STOP.getVal());
-        rightRoller.setPower(RollerMode.STOP.getVal());
+        
+        leftRoller.setPosition(RollerMode.CLOSE.getVal());
+        rightRoller.setPosition(RollerMode.CLOSE.getVal());
 
         left.setPosition(Position.UP.getLeftPos());
         right.setPosition(Position.UP.getRightPos());
@@ -107,13 +107,13 @@ public class Arm {
         if(side == Side.RIGHT) {
             if(currentRollerModeRight != mode) {
                 currentRollerModeRight = mode;
-                rightRoller.setPower(mode.getVal());
+                rightRoller.setPosition(mode.getVal());
             }
         }
         else {
             if(currentRollerModeLeft != mode) {
                 currentRollerModeLeft = mode;
-                leftRoller.setPower(mode.getVal());
+                leftRoller.setPosition(mode.getVal());
             }
         }
     }
@@ -140,8 +140,8 @@ public class Arm {
     }
 
     public void stop() {
-        setRoller(RollerMode.STOP, Side.RIGHT);
-        setRoller(RollerMode.STOP, Side.LEFT);
+        setRoller(RollerMode.OPEN, Side.RIGHT);
+        setRoller(RollerMode.OPEN, Side.LEFT);
         moveToPosition(Position.HOLD, Side.RIGHT);
         moveToPosition(Position.HOLD, Side.LEFT);
     }

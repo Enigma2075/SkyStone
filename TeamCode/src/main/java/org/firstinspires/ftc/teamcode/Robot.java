@@ -111,16 +111,16 @@ public class Robot {
     }
 
     public void grabStone(Arm.Side side) {
-        arm.setRoller(Arm.RollerMode.IN, side);
+        arm.setRoller(Arm.RollerMode.CLOSE, side);
         arm.moveToPositionSync(Arm.Position.DOWN, side);
-        arm.moveToPositionSync(Arm.Position.HOLD, side);
+        arm.moveToPosition(Arm.Position.HOLD, side);
         //arm.setRoller(Arm.RollerMode.STOP, side);
     }
 
     public void dropStone(Arm.Side side) {
         //arm.moveToPositionSync(Arm.Position.DROP, side);
         //arm.moveToPosition(Arm.Position.HOLD, side);
-        arm.setRoller(Arm.RollerMode.OUT, side);
+        arm.setRoller(Arm.RollerMode.OPEN, side);
     }
 
     public void stop() {

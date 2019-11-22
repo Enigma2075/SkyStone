@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.path.heading.ConstantInterpolator;
 import com.acmerobotics.roadrunner.path.heading.LinearInterpolator;
@@ -26,7 +27,7 @@ public class RedAuto extends LinearOpMode {
     FoundationGrabber grabber = null;
 
     public enum SkyStonePosition {
-        WALL(0), CENTER(8), BRIDGE(17);
+        WALL(0), CENTER(8), BRIDGE(16);
 
         private double numVal;
 
@@ -56,7 +57,6 @@ public class RedAuto extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-
         // Move so we are closer to the Stones
         Trajectory moveToSeeSkyStone = drive.trajectoryBuilder()
                 .lineTo(new Vector2d( 0,19), new ConstantInterpolator(0))
@@ -65,6 +65,8 @@ public class RedAuto extends LinearOpMode {
         drive.followTrajectorySync(moveToSeeSkyStone);
 
         arm.moveToPosition(Arm.Position.HOLD, Arm.Side.RIGHT);
+        arm.moveToPosition(Arm.Position.READY, Arm.Side.LEFT);
+        arm.setRoller(Arm.RollerMode.OPEN, Arm.Side.LEFT);
 
         boolean found = findObject();
 
@@ -86,7 +88,7 @@ public class RedAuto extends LinearOpMode {
             else {
                 // We didn't find the SkyStone so we move to the right stone.
                 Trajectory moveToRightSkyStone = drive.trajectoryBuilder()
-                        .lineTo(new Vector2d( SkyStonePosition.BRIDGE.getNumVal(),19), new ConstantInterpolator(0))
+                        .lineTo(new Vector2d( SkyStonePosition.BRIDGE.getNumVal(),26 ), new ConstantInterpolator(0))
                         .build();
                 drive.followTrajectorySync(moveToRightSkyStone);
             }
@@ -95,146 +97,145 @@ public class RedAuto extends LinearOpMode {
         // Disable Tracking when we are done;
         vision.deactivate();
 
-        //Trajectory moveToCenterSkyStone = drive.trajectoryBuilder()
-        //        .lineTo(new Vector2d( skyStonePosition.getNumVal() + 2,19), new ConstantInterpolator(0))
-        //        .build();
-        //drive.followTrajectorySync(moveToCenterSkyStone);
-
-        grabStone(skyStonePosition.getNumVal() + 2, 6);
+        grabStone(skyStonePosition.getNumVal() + 1, 0);
 
         // Move to Foundation and drop
-        moveToFoundationAndDrop(0);
+        moveToFoundationAndDrop(20);
 
         if(skyStonePosition == SkyStonePosition.WALL) {
             // Move to second SkyStone
             Trajectory moveToSkyStone2 = drive.trajectoryBuilder()
                     .lineTo(new Vector2d(40, 16), new LinearInterpolator(0, 0))
-                    .lineTo(new Vector2d(-21, 25), new LinearInterpolator(0, 0))
-                    //.back(74)
+                    .lineTo(new Vector2d(-22, 25), new LinearInterpolator(0, 0))
                     .build();
-            drive.followTrajectorySync(moveToSkyStone2);
+            moveToBlock(moveToSkyStone2);
 
-            grabStone(-21, 5);
+            grabStone(-22, 0);
         }
         else if(skyStonePosition == SkyStonePosition.CENTER) {
             // Move to second SkyStone
             Trajectory moveToSkyStone2 = drive.trajectoryBuilder()
                     .lineTo(new Vector2d(40, 16), new LinearInterpolator(0, 0))
-                    .lineTo(new Vector2d(-13, 25), new LinearInterpolator(0, 0))
-                    //.back(74)
+                    .lineTo(new Vector2d(-14, 25), new LinearInterpolator(0, 0))
                     .build();
-            drive.followTrajectorySync(moveToSkyStone2);
+            moveToBlock(moveToSkyStone2);
 
-            grabStone(-13, 5);
+            grabStone(-14, 0);
         }
         else if(skyStonePosition == SkyStonePosition.BRIDGE) {
             // Move to second SkyStone
             Trajectory moveToSkyStone2 = drive.trajectoryBuilder()
                     .lineTo(new Vector2d(40, 16), new LinearInterpolator(0, 0))
-                    .lineTo(new Vector2d(-3, 25), new LinearInterpolator(0, 0))
-                    //.back(74)
+                    .lineTo(new Vector2d(-7, 25), new LinearInterpolator(0, 0))
                     .build();
-            drive.followTrajectorySync(moveToSkyStone2);
+            moveToBlock(moveToSkyStone2);
 
-            grabStone(-3, 5);
+            grabStone(-7, 0);
         }
 
-        moveToFoundationAndDrop(0);
+        moveToFoundationAndDrop(10);
 
         if(skyStonePosition == SkyStonePosition.WALL || skyStonePosition == SkyStonePosition.CENTER) {
             // Move to third SkyStone
-            Trajectory moveToSkyStone2 = drive.trajectoryBuilder()
+            Trajectory moveToSkyStone3 = drive.trajectoryBuilder()
                     .lineTo(new Vector2d(40, 16), new LinearInterpolator(0, 0))
-                    .lineTo(new Vector2d(SkyStonePosition.BRIDGE.getNumVal() + 2, 25), new LinearInterpolator(0, 0))
-                    //.back(74)
+                    .lineTo(new Vector2d(SkyStonePosition.BRIDGE.getNumVal()+1, 25), new LinearInterpolator(0, 0))
                     .build();
-            drive.followTrajectorySync(moveToSkyStone2);
+            moveToBlock(moveToSkyStone3);
 
-            grabStone(SkyStonePosition.BRIDGE.getNumVal() + 2, 5);
+            grabStone(SkyStonePosition.BRIDGE.getNumVal()+1, 2);
         }
         else if(skyStonePosition == SkyStonePosition.BRIDGE) {
             // Move to third SkyStone
-            Trajectory moveToSkyStone2 = drive.trajectoryBuilder()
+            Trajectory moveToSkyStone3 = drive.trajectoryBuilder()
                     .lineTo(new Vector2d(40, 16), new LinearInterpolator(0, 0))
-                    .lineTo(new Vector2d(SkyStonePosition.CENTER.getNumVal() + 2, 25), new LinearInterpolator(0, 0))
-                    //.back(74)
+                    .lineTo(new Vector2d(SkyStonePosition.CENTER.getNumVal()+2, 25), new LinearInterpolator(0, 0))
                     .build();
-            drive.followTrajectorySync(moveToSkyStone2);
+            moveToBlock(moveToSkyStone3);
 
-            grabStone(SkyStonePosition.CENTER.getNumVal() + 2, 5);
+            grabStone(SkyStonePosition.CENTER.getNumVal()+2, 2);
         }
 
         grabber.moveToPosition(FoundationGrabber.Position.READY, Arm.Side.LEFT);
 
-        moveToFoundationAndDrop(10, 2);
+        moveToFoundationAndDrop(0, 2);
 
         grabber.moveToPositionSync(FoundationGrabber.Position.DOWN, Arm.Side.LEFT);
 
-        arm.moveToPosition(Arm.Position.UP, Arm.Side.RIGHT);
-
         Trajectory moveFoundation = drive.trajectoryBuilder()
-                .lineTo(new Vector2d(60, 15), new LinearInterpolator(0, Math.toRadians(-90)))
+                .lineTo(new Vector2d(60, 35), new LinearInterpolator(Math.toRadians(0), Math.toRadians(-90)))
+                .lineTo(new Vector2d(80, 28), new LinearInterpolator(Math.toRadians(-100), 0))
                 .build();
         drive.followTrajectorySync(moveFoundation);
 
         grabber.moveToPosition(FoundationGrabber.Position.UP, Arm.Side.LEFT);
 
         Trajectory park = drive.trajectoryBuilder()
-                //.lineTo(new Vector2d(65, 1.5), new LinearInterpolator(0, 0))
-                //.lineTo(new Vector2d(55, 20), new LinearInterpolator(0, 0))
-                .lineTo(new Vector2d(40, 24), new ConstantInterpolator(Math.toRadians(-90)))
+                .lineTo(new Vector2d(30, 35), new LinearInterpolator(Math.toRadians(-90), 0))
                 .build();
         drive.followTrajectorySync(park);
+      }
 
-        //Trajectory park2 = drive.trajectoryBuilder()
-        //        .lineTo(new Vector2d(55, 20), new LinearInterpolator(0, 0))
-        //        .build();
-        //drive.followTrajectorySync(park2);
+    private void grabStone(double x, double yOffset) {
+        // Grab Sky Stone
+      Trajectory moveToSkyStone2 = drive.trajectoryBuilder()
+                .lineTo(new Vector2d(x, 27 + yOffset), new LinearInterpolator(0, 0))
+                .build();
+        drive.followTrajectorySync(moveToSkyStone2);
 
-        //arm.moveToPosition(Arm.Position.HOLD, Arm.Side.RIGHT);
-
-        //Trajectory park1 = drive.trajectoryBuilder()
-        //        //.lineTo(new Vector2d(40, 20), new LinearInterpolator(0, 0))
-        //        .lineTo(new Vector2d(40, 22), new LinearInterpolator(0, 0))
-        //        .build();
-        //drive.followTrajectorySync(park1);
+        robot.grabStone(Arm.Side.LEFT);
     }
 
-    private void grabStone(double x, double distance) {
-        // Grab Sky Stone
-
-        arm.moveToPosition(Arm.Position.READY, Arm.Side.LEFT);
-        arm.setRoller(Arm.RollerMode.IN, Arm.Side.LEFT);
-        robot.moveToDistance(x, distance);
-        robot.grabStone(Arm.Side.LEFT);
+    private void moveToBlock(Trajectory trajectory) {
+        drive.followTrajectorySync(trajectory, new ReadyToGrabAtDistance(40));
     }
 
     private void moveToFoundationAndDrop(double xOffset) {
         moveToFoundationAndDrop(xOffset, 0.0);
     }
 
+    class DropArmAtDistance implements Drivetrain.ExecuteWhileMoving {
+        double min;
+
+        public DropArmAtDistance(double min) {
+            this.min = min;
+        }
+
+        public boolean execute(Pose2d pose) {
+            if(pose.getX() > min) {
+                robot.arm.moveToPosition(Arm.Position.DROP1, Arm.Side.LEFT);
+            }
+            //if(pose.getX() > min + 10) {
+            //    robot.arm.setRoller(Arm.RollerMode.READY, Arm.Side.LEFT);
+            //}
+            return true;
+        }
+    }
+
+    class ReadyToGrabAtDistance implements Drivetrain.ExecuteWhileMoving {
+        double max;
+
+        public ReadyToGrabAtDistance(double max) {
+            this.max = max;
+        }
+
+        public boolean execute(Pose2d pose) {
+            if(pose.getX() < max) {
+                robot.arm.moveToPosition(Arm.Position.READY, Arm.Side.LEFT);
+                robot.arm.setRoller(Arm.RollerMode.OPEN, Arm.Side.LEFT);
+            }
+            return true;
+        }
+    }
+
     private void moveToFoundationAndDrop(double xOffset, double yOffset) {
         Trajectory moveToFoundation = drive.trajectoryBuilder()
                 .lineTo(new Vector2d(40, 20), new LinearInterpolator(0, 0))
-                .lineTo(new Vector2d(80.0 + xOffset, 32 + yOffset), new LinearInterpolator(0, 0))
-                //.back(74)
+                .lineTo(new Vector2d(80.5 + xOffset, 32 + yOffset), new LinearInterpolator(0, 0))
                 .build();
-        drive.followTrajectorySync(moveToFoundation);
+        drive.followTrajectorySync(moveToFoundation, new DropArmAtDistance(45));
 
         robot.dropStone(Arm.Side.LEFT);
-    }
-
-    private boolean followTrajectoryAndFindObject(Trajectory trajectory) {
-        boolean found = false;
-        drive.followTrajectory(trajectory);
-        while(drive.isBusy() && !isStopRequested()) {
-            robot.sensorArray.clearRead();
-            drive.update();
-            if(!found) {
-                found = vision.findObject();
-            }
-        }
-        return found;
     }
 
     private boolean findObject() {

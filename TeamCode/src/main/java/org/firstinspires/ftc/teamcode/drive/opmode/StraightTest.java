@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.sensors.SensorArray;
  */
 @Config
 @Autonomous(group = "drive")
-//@Disabled
+@Disabled
 public class StraightTest extends LinearOpMode {
     public static double DISTANCE = 72;
 

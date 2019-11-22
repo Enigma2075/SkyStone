@@ -78,8 +78,8 @@ public class DriveOp extends LinearOpMode {
                 arms = true;
                 robot.arm.moveToPosition(Arm.Position.CAP, Arm.Side.RIGHT);
                 robot.arm.moveToPosition(Arm.Position.CAP, Arm.Side.LEFT);
-                robot.arm.setRoller(Arm.RollerMode.OUT, Arm.Side.RIGHT);
-                robot.arm.setRoller(Arm.RollerMode.OUT, Arm.Side.LEFT);
+                robot.arm.setRoller(Arm.RollerMode.CLOSE, Arm.Side.RIGHT);
+                robot.arm.setRoller(Arm.RollerMode.CLOSE, Arm.Side.LEFT);
             }
             else {
                 if(arms) {

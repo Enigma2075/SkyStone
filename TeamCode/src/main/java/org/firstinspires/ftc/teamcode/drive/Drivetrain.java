@@ -42,6 +42,7 @@ import org.openftc.revextensions2.RevBulkData;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.BASE_CONSTRAINTS;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MOTOR_VELO_PID;
@@ -243,9 +244,18 @@ public class Drivetrain extends MecanumDrive {
         mode = Mode.FOLLOW_TRAJECTORY;
     }
 
+    public interface ExecuteWhileMoving {
+        boolean execute(Pose2d pose);
+    }
+
     public void followTrajectorySync(Trajectory trajectory) {
         followTrajectory(trajectory);
         waitForIdle();
+    }
+
+    public void followTrajectorySync(Trajectory trajectory, ExecuteWhileMoving task) {
+        followTrajectory(trajectory);
+        waitForIdle(task);
     }
 
     public Pose2d getLastError() {
@@ -341,6 +351,14 @@ public class Drivetrain extends MecanumDrive {
         while (!Thread.currentThread().isInterrupted() && isBusy()) {
             sensorArray.clearRead();
             update();
+        }
+    }
+
+    private void waitForIdle(ExecuteWhileMoving task) {
+        while (!Thread.currentThread().isInterrupted() && isBusy()) {
+            sensorArray.clearRead();
+            update();
+            task.execute(getPoseEstimate());
         }
     }
 
