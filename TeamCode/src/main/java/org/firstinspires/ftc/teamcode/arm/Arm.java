@@ -30,27 +30,33 @@ public class Arm {
     private RollerMode currentRollerModeLeft = RollerMode.CLOSE;
 
     public enum RollerMode {
-        CLOSE(1),
-        READY(.5),
-        OPEN(.7);
+        CLOSE(1, 1),
+        READY(.5, .5),
+        OPEN(.4, .7);
 
-        private double val;
+        private double valRight;
+        private double valLeft;
 
-        RollerMode(double val) {
-            this.val = val;
+        RollerMode(double valRight, double valLeft) {
+            this.valRight = valRight;
+            this.valLeft = valLeft;
         }
 
-        public double getVal() {
-            return val;
+        public double getValRight() {
+            return valRight;
+        }
+
+        public double getValLeft() {
+            return valLeft;
         }
     }
 
     public enum Position {
         UP(0.0, 0.0, 1.0),
         HOLD(.4, .4, .5),
-        READY(.7, .7, 1.0),
+        READY(.7, .62, 1.0),
         DOWN(1.0, 1.0, .25 ),
-        DROP1(.58, .58, 1.0),
+        DROP1(.58, .54, 1.0),
         DROP2(.55, .55, 1.0),
         CAP(.6, .6, 1.0);
 
@@ -90,8 +96,8 @@ public class Arm {
         left.setDirection(Servo.Direction.REVERSE);
         rightRoller.setDirection(Servo.Direction.REVERSE);
 
-        leftRoller.setPosition(RollerMode.CLOSE.getVal());
-        rightRoller.setPosition(RollerMode.CLOSE.getVal());
+        leftRoller.setPosition(RollerMode.CLOSE.getValLeft());
+        rightRoller.setPosition(RollerMode.CLOSE.getValRight());
 
         left.setPosition(Position.UP.getLeftPos());
         right.setPosition(Position.UP.getRightPos());
@@ -108,13 +114,13 @@ public class Arm {
         if(side == Side.RIGHT) {
             if(currentRollerModeRight != mode) {
                 currentRollerModeRight = mode;
-                rightRoller.setPosition(mode.getVal());
+                rightRoller.setPosition(mode.getValRight());
             }
         }
         else {
             if(currentRollerModeLeft != mode) {
                 currentRollerModeLeft = mode;
-                leftRoller.setPosition(mode.getVal());
+                leftRoller.setPosition(mode.getValLeft());
             }
         }
     }
