@@ -27,7 +27,7 @@ public class BlueAuto extends LinearOpMode {
     FoundationGrabber grabber = null;
 
     public enum SkyStonePosition {
-        WALL(0), CENTER(8), BRIDGE(17);
+        WALL(0), CENTER(-8), BRIDGE(-17);
 
         private double numVal;
 
@@ -180,7 +180,7 @@ public class BlueAuto extends LinearOpMode {
     private void grabStone(double x, double yOffset) {
         // Grab Sky Stone
         Trajectory moveToSkyStone2 = drive.trajectoryBuilder()
-                .lineTo(new Vector2d(x, 27 - yOffset), new LinearInterpolator(0, 0))
+                .lineTo(new Vector2d(x, -27 - yOffset), new LinearInterpolator(0, 0))
                 .build();
         drive.followTrajectorySync(moveToSkyStone2);
 
