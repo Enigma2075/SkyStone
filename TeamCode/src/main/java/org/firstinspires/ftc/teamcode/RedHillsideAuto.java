@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.vision.Vision;
  */
 @Config
 @Autonomous(group = "drive")
-public class RedAuto extends LinearOpMode {
+public class RedHillsideAuto extends LinearOpMode {
     Robot robot = null;
     Drivetrain drive = null;
     Arm arm = null;
@@ -100,12 +100,12 @@ public class RedAuto extends LinearOpMode {
         grabStone(skyStonePosition.getNumVal() + 1, 0);
 
         // Move to Foundation and drop
-        moveToFoundationAndDrop(18);
+        moveToFoundationAndDrop(20);
 
         if(skyStonePosition == SkyStonePosition.WALL) {
             // Move to second SkyStone
             Trajectory moveToSkyStone2 = drive.trajectoryBuilder()
-                    .lineTo(new Vector2d(40, 18), new LinearInterpolator(0, 0))
+                    .lineTo(new Vector2d(40, 16), new LinearInterpolator(0, 0))
                     .lineTo(new Vector2d(-22, 25), new LinearInterpolator(0, 0))
                     .build();
             moveToBlock(moveToSkyStone2);
@@ -115,7 +115,7 @@ public class RedAuto extends LinearOpMode {
         else if(skyStonePosition == SkyStonePosition.CENTER) {
             // Move to second SkyStone
             Trajectory moveToSkyStone2 = drive.trajectoryBuilder()
-                    .lineTo(new Vector2d(40, 18), new LinearInterpolator(0, 0))
+                    .lineTo(new Vector2d(40, 16), new LinearInterpolator(0, 0))
                     .lineTo(new Vector2d(-14, 25), new LinearInterpolator(0, 0))
                     .build();
             moveToBlock(moveToSkyStone2);
@@ -125,7 +125,7 @@ public class RedAuto extends LinearOpMode {
         else if(skyStonePosition == SkyStonePosition.BRIDGE) {
             // Move to second SkyStone
             Trajectory moveToSkyStone2 = drive.trajectoryBuilder()
-                    .lineTo(new Vector2d(40, 18), new LinearInterpolator(0, 0))
+                    .lineTo(new Vector2d(40, 16), new LinearInterpolator(0, 0))
                     .lineTo(new Vector2d(-7, 25), new LinearInterpolator(0, 0))
                     .build();
             moveToBlock(moveToSkyStone2);
@@ -138,7 +138,7 @@ public class RedAuto extends LinearOpMode {
         if(skyStonePosition == SkyStonePosition.WALL || skyStonePosition == SkyStonePosition.CENTER) {
             // Move to third SkyStone
             Trajectory moveToSkyStone3 = drive.trajectoryBuilder()
-                    .lineTo(new Vector2d(40, 18), new LinearInterpolator(0, 0))
+                    .lineTo(new Vector2d(40, 16), new LinearInterpolator(0, 0))
                     .lineTo(new Vector2d(SkyStonePosition.BRIDGE.getNumVal()+1, 25), new LinearInterpolator(0, 0))
                     .build();
             moveToBlock(moveToSkyStone3);
@@ -148,7 +148,7 @@ public class RedAuto extends LinearOpMode {
         else if(skyStonePosition == SkyStonePosition.BRIDGE) {
             // Move to third SkyStone
             Trajectory moveToSkyStone3 = drive.trajectoryBuilder()
-                    .lineTo(new Vector2d(40, 18), new LinearInterpolator(0, 0))
+                    .lineTo(new Vector2d(40, 16), new LinearInterpolator(0, 0))
                     .lineTo(new Vector2d(SkyStonePosition.CENTER.getNumVal()+1, 25), new LinearInterpolator(0, 0))
                     .build();
             moveToBlock(moveToSkyStone3);
@@ -222,12 +222,6 @@ public class RedAuto extends LinearOpMode {
         public boolean execute(Pose2d pose) {
             if(pose.getX() < max) {
                 robot.arm.moveToPosition(Arm.Position.READY, Arm.Side.LEFT);
-                robot.arm.setRoller(Arm.RollerMode.OPEN, Arm.Side.LEFT);
-            }
-            else if(pose.getX() < max - 18) {
-                robot.arm.setRoller(Arm.RollerMode.CLOSE, Arm.Side.LEFT);
-            }
-            else {
                 robot.arm.setRoller(Arm.RollerMode.OPEN, Arm.Side.LEFT);
             }
             return true;

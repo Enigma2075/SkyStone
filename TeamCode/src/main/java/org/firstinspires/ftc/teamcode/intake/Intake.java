@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.sensors.SensorArray;
+import org.openftc.revextensions2.RevBulkData;
 
 public class Intake {
     private DcMotor rightMotor;
@@ -70,7 +71,13 @@ public class Intake {
     }
 
     public void setMode(Mode mode) {
-        boolean limitState = sensorArray.getBulkData(SensorArray.HubSide.RIGHT).getDigitalInputState(limit);
+        RevBulkData data = sensorArray.getBulkData(SensorArray.HubSide.RIGHT);
+
+        if(data == null) {
+            return;
+        }
+
+        boolean limitState = data.getDigitalInputState(limit);
         if(mode == Mode.INTAKE
                 && currentTarget == 0){
             mode = Mode.PLACE;

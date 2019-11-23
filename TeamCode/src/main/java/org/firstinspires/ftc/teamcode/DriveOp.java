@@ -53,8 +53,8 @@ public class DriveOp extends LinearOpMode {
             double r = -gamepad1.right_stick_x;
 
             robot.drivetrain.setDrivePower(new Pose2d(
-                    Math.signum(x) * (Math.abs(x) * Math.abs(x) * Math.abs(x)) * .6,
-                    Math.signum(y) * (Math.abs(y) * Math.abs(y) * Math.abs(y)) * .6,
+                    Math.signum(x) * (Math.abs(x) * Math.abs(x) * Math.abs(x)) * .7,
+                    Math.signum(y) * (Math.abs(y) * Math.abs(y) * Math.abs(y)) * .7,
                     Math.signum(r) * (Math.abs(r) * Math.abs(r) * Math.abs(r)) * .05
             ));
 
@@ -68,7 +68,7 @@ public class DriveOp extends LinearOpMode {
                 robot.intake.setMode(Intake.Mode.IDLE);
             }
 
-            if(gamepad2.a) {
+            if(gamepad2.y) {
                 if(!arms) {
                     arms = true;
                     robot.arm.moveToPosition(Arm.Position.HOLD, Arm.Side.LEFT);
@@ -77,7 +77,7 @@ public class DriveOp extends LinearOpMode {
                     robot.arm.setRoller(Arm.RollerMode.CLOSE, Arm.Side.LEFT);
                 }
             }
-            else if(gamepad2.y) {
+            else if(gamepad2.a) {
                 arms = true;
                 robot.arm.moveToPosition(Arm.Position.CAP, Arm.Side.RIGHT);
                 robot.arm.moveToPosition(Arm.Position.CAP, Arm.Side.LEFT);
@@ -101,11 +101,13 @@ public class DriveOp extends LinearOpMode {
                 robot.intake.setPivot(0);
             }
 
-            if(gamepad2.b) {
+            if(gamepad2.b || gamepad1.b) {
                 robot.foundationGrabber.moveToPosition(FoundationGrabber.Position.DOWN, Arm.Side.RIGHT);
+                robot.foundationGrabber.moveToPosition(FoundationGrabber.Position.DOWN, Arm.Side.LEFT);
             }
             else {
                 robot.foundationGrabber.moveToPosition(FoundationGrabber.Position.UP, Arm.Side.RIGHT);
+                robot.foundationGrabber.moveToPosition(FoundationGrabber.Position.UP, Arm.Side.LEFT);
             }
 
 
