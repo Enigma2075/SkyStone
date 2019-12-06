@@ -64,8 +64,9 @@ public class Drivetrain extends MecanumDrive {
     private List<ExpansionHubMotor> motors;
     private BNO055IMU imu;
 
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(1.5, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(5, 0, 0);
+    public static PIDCoefficients X_PID = new PIDCoefficients(1.5, 0, 0);
+    public static PIDCoefficients Y_PID = new PIDCoefficients(1.5, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(6, 0, 0);
     public static PIDCoefficients TURN_PID = new PIDCoefficients(.002, 0, 0);
 
     public enum Mode {
@@ -93,6 +94,8 @@ public class Drivetrain extends MecanumDrive {
     public Drivetrain(HardwareMap hardwareMap, SensorArray sensorArray, boolean defaultLocalizer) {
         super(kV, kA, kStatic, TRACK_WIDTH);
 
+
+
         this.sensorArray = sensorArray;
 
         dashboard = FtcDashboard.getInstance();
@@ -106,7 +109,7 @@ public class Drivetrain extends MecanumDrive {
         turnController.setInputBounds(0, 2 * Math.PI);
 
         constraints = new MecanumConstraints(BASE_CONSTRAINTS, TRACK_WIDTH);
-        follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID);
+        follower = new HolonomicPIDVAFollower(X_PID, Y_PID, HEADING_PID);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -132,6 +135,8 @@ public class Drivetrain extends MecanumDrive {
             }
         }
 
+        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
         if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
             setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
@@ -152,6 +157,12 @@ public class Drivetrain extends MecanumDrive {
     public void setMode(DcMotor.RunMode mode) {
         for(ExpansionHubMotor motor: motors) {
             motor.setMode(mode);
+        }
+    }
+
+    public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior mode) {
+        for(ExpansionHubMotor motor: motors) {
+            motor.setZeroPowerBehavior(mode);
         }
     }
 
@@ -360,6 +371,31 @@ public class Drivetrain extends MecanumDrive {
             update();
             task.execute(getPoseEstimate());
         }
+    }
+
+    @Override
+    public void setDrivePower(Pose2d pose) {
+
+        double VX_WEIGHT = 1;
+        double VY_WEIGHT = 1;
+        double OMEGA_WEIGHT = 1;
+
+        Pose2d vel;
+        if (Math.abs(pose.getX()) + Math.abs(pose.getY()) + Math.abs(pose.getHeading()) > 1) {
+            // re-normalize the powers according to the weights
+            double denom = VX_WEIGHT * Math.abs(pose.getX())
+                    + VY_WEIGHT * Math.abs(pose.getY())
+                    + OMEGA_WEIGHT * Math.abs(pose.getHeading());
+            vel = new Pose2d(
+                    VX_WEIGHT * pose.getX(),
+                    VY_WEIGHT * pose.getY(),
+                    OMEGA_WEIGHT * pose.getHeading()
+            ).div(denom);
+        } else {
+            vel = pose;
+        }
+
+        super.setDrivePower(vel);
     }
 
     public boolean isBusy() {

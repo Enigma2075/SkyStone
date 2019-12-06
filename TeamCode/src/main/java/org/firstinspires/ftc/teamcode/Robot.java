@@ -64,8 +64,8 @@ public class Robot {
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
 
-        rightDist = hardwareMap.get(Rev2mDistanceSensor.class, "rightDistance");
-        leftDist = hardwareMap.get(Rev2mDistanceSensor.class, "leftDistance");
+        //rightDist = hardwareMap.get(Rev2mDistanceSensor.class, "rightDistance");
+        //leftDist = hardwareMap.get(Rev2mDistanceSensor.class, "leftDistance");
     }
 
     public void moveToDistance(double x, double targetDistance) {

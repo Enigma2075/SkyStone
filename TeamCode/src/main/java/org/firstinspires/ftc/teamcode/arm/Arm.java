@@ -31,8 +31,8 @@ public class Arm {
 
     public enum RollerMode {
         CLOSE(1, 1),
-        //READY(.5, .5),
-        OPEN(.35, .7);
+        FULL_OPEN(0, 0),
+        OPEN(.3, .4);
 
         private double valRight;
         private double valLeft;
@@ -52,13 +52,13 @@ public class Arm {
     }
 
     public enum Position {
-        UP(0.0, 0.0, 1.0),
-        HOLD(.4, .33, .5),
-        READY(.7, .59, 1.0),
-        DOWN(1.0, 1.0, .25 ),
-        DROP1(.58, .54, 1.0),
+        UP(0.1, 0.28, 1.0),
+        HOLD(.45, .33, .5),
+        READY(.7, .61, 1.0),
+        DOWN(1.0, 1.0, .25),
+        DROP1(.6, .54, 1.0),
         DROP2(.55, .55, 1.0),
-        CAP(.6, .5, 1.0);
+        CAP(.5, .5, 1.0);
 
         private double rightPos;
         private double leftPos;
