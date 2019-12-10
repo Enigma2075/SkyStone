@@ -75,7 +75,7 @@ public class BlueAuto extends LinearOpMode {
 
         boolean found = findObject();
 
-        double yOffset = 0;
+        double yOffset = -1.5;
         double xStart = 0;
 
         if(found) {
@@ -113,7 +113,7 @@ public class BlueAuto extends LinearOpMode {
         grabStone(skyStonePosition.getNumVal() + 3, yOffset);
 
         // Move to Foundation and drop
-        moveToFoundationAndDrop(19, 0, xStart);
+        moveToFoundationAndDrop(17, 0, xStart);
 
         if(skyStonePosition == SkyStonePosition.WALL) {
             // Move to second SkyStone
@@ -149,17 +149,18 @@ public class BlueAuto extends LinearOpMode {
         moveToFoundationAndDrop(10);
 
         xStart = 0;
+        yOffset = 0;
 
         if(skyStonePosition == SkyStonePosition.WALL || skyStonePosition == SkyStonePosition.CENTER) {
             // Move to third SkyStone
             Trajectory moveToSkyStone3 = drive.trajectoryBuilder()
                     .lineTo(new Vector2d(40, -16), new LinearInterpolator(0, 0))
-                    .lineTo(new Vector2d(SkyStonePosition.BRIDGE.getNumVal()+2, -27.5), new LinearInterpolator(0, 0))
+                    .lineTo(new Vector2d(SkyStonePosition.BRIDGE.getNumVal()+1, -27.5), new LinearInterpolator(0, 0))
                     .build();
             moveToBlock(moveToSkyStone3);
 
-            grabStone(SkyStonePosition.BRIDGE.getNumVal()+2, 2);
-            xStart = SkyStonePosition.BRIDGE.getNumVal()+2;
+            grabStone(SkyStonePosition.BRIDGE.getNumVal()+1, 2);
+            xStart = SkyStonePosition.BRIDGE.getNumVal()+1;
         }
         else if(skyStonePosition == SkyStonePosition.BRIDGE) {
             // Move to third SkyStone
@@ -174,7 +175,7 @@ public class BlueAuto extends LinearOpMode {
 
         grabber.moveToPosition(FoundationGrabber.Position.READY, Arm.Side.RIGHT);
 
-        moveToFoundationAndDrop(0, 3);
+        moveToFoundationAndDrop(3, 4);
 
         grabber.moveToPositionSync(FoundationGrabber.Position.DOWN, Arm.Side.RIGHT);
 
@@ -196,7 +197,7 @@ public class BlueAuto extends LinearOpMode {
     private void grabStone(double x, double yOffset) {
         // Grab Sky Stone
         Trajectory moveToSkyStone2 = drive.trajectoryBuilder()
-                .lineTo(new Vector2d(x, -27 - yOffset), new LinearInterpolator(0, 0))
+                .lineTo(new Vector2d(x, -28 - yOffset), new LinearInterpolator(0, 0))
                 .build();
         drive.followTrajectorySync(moveToSkyStone2);
 

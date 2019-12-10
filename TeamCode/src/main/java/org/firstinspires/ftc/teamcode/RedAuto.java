@@ -156,7 +156,7 @@ public class RedAuto extends LinearOpMode {
                     .build();
             moveToBlock(moveToSkyStone3);
 
-            grabStone(SkyStonePosition.BRIDGE.getNumVal()+1, 0);
+            grabStone(SkyStonePosition.BRIDGE.getNumVal()+1, 1);
 
             xStart = SkyStonePosition.BRIDGE.getNumVal()+1;
         }
@@ -199,7 +199,7 @@ public class RedAuto extends LinearOpMode {
     private void grabStone(double x, double yOffset) {
         // Grab Sky Stone
       Trajectory moveToSkyStone2 = drive.trajectoryBuilder()
-                .lineTo(new Vector2d(x, 25 + yOffset), new LinearInterpolator(0, 0))
+                .lineTo(new Vector2d(x, 26 + yOffset), new LinearInterpolator(0, 0))
                 .build();
         drive.followTrajectorySync(moveToSkyStone2);
 

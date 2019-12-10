@@ -58,7 +58,7 @@ public class Intake {
         INTAKE(490),
         //MOVE_LIFT(490),
         HOLD(0),
-        PLACE(-410);
+        PLACE(-390);
 
         private int val;
 
@@ -142,6 +142,8 @@ public class Intake {
     }
 
     public void setMode(Mode mode, Drivetrain drive, Telemetry telemetry) {
+        NanoClock clock = NanoClock.system();
+        double start;
         switch(currentMode) {
             case NONE:
                 switch (mode) {
@@ -149,7 +151,8 @@ public class Intake {
                         _setPivotMode(PivotMode.INTAKE);
                         _setLiftMode(LiftMode.TILT);
                         tilt.setPosition(1);
-                        while (lift.getCurrentPosition() < startingLiftPos + LiftMode.TILT.getVal() - 75 && !Thread.currentThread().isInterrupted()) {
+                        start = clock.seconds();
+                        while (start + 3 > clock.seconds() && lift.getCurrentPosition() < startingLiftPos + LiftMode.TILT.getVal() - 75 && !Thread.currentThread().isInterrupted()) {
 
                         }
                         _setLiftMode(LiftMode.GRAB_STACK);
@@ -163,11 +166,13 @@ public class Intake {
                         tilt.setPosition(0);
                         _setPivotMode(PivotMode.INTAKE);
                         _setLiftMode(LiftMode.TILT);
-                        while (lift.getCurrentPosition() < startingLiftPos + LiftMode.TILT.getVal() - 50 && !Thread.currentThread().isInterrupted()) {
+                        start = clock.seconds();
+                        while (start + 3 > clock.seconds() && lift.getCurrentPosition() < startingLiftPos + LiftMode.TILT.getVal() - 50 && !Thread.currentThread().isInterrupted()) {
 
                         }
                         _setLiftMode(LiftMode.DOWN);
-                        while (lift.getCurrentPosition() > startingLiftPos + LiftMode.DOWN.getVal() + 50 && !Thread.currentThread().isInterrupted()) {
+                        start = clock.seconds();
+                        while (start + 3 > clock.seconds() && lift.getCurrentPosition() > startingLiftPos + LiftMode.DOWN.getVal() + 50 && !Thread.currentThread().isInterrupted()) {
 
                         }
                         currentMode = Mode.NONE;
@@ -176,17 +181,19 @@ public class Intake {
                         drive.setDrivePower(new Pose2d(-.2, 0, 0));
                         tilt.setPosition(1);
                         _setLiftMode(LiftMode.UP);
-                        while (lift.getCurrentPosition() < startingLiftPos + LiftMode.UP.getVal() - 50 && !Thread.currentThread().isInterrupted()) {
+                        start = clock.seconds();
+                        while (start + 3 > clock.seconds() && lift.getCurrentPosition() < startingLiftPos + LiftMode.UP.getVal() - 50 && !Thread.currentThread().isInterrupted()) {
                         }
                         _setPivotMode(PivotMode.PLACE);
-                        while (pivot.getCurrentPosition() > startingPivotPos + PivotMode.PLACE.getVal() + 50 && !Thread.currentThread().isInterrupted()) {
+                        start = clock.seconds();
+                        while (start + 3 > clock.seconds() && pivot.getCurrentPosition() > startingPivotPos + PivotMode.PLACE.getVal() + 50 && !Thread.currentThread().isInterrupted()) {
                         }
                         _setIntakeMode(IntakeMode.PLACE);
-                        NanoClock clock = NanoClock.system();
-                        double start = clock.seconds();
+                        start = clock.seconds();
                         while (start + 1.0 > clock.seconds() && !Thread.currentThread().isInterrupted()) {
 
                         }
+
                         currentMode = mode;
                         break;
                 }
@@ -196,23 +203,25 @@ public class Intake {
                     case SCORE:
                         drive.setDrivePower(new Pose2d(-.2, 0, 0));
                         _setPivotMode(PivotMode.INTAKE);
-                        while (pivot.getCurrentPosition() < startingPivotPos + PivotMode.INTAKE.getVal() - 100 && !Thread.currentThread().isInterrupted()) {
+                        start = clock.seconds();
+                        while (start + 3 > clock.seconds() && pivot.getCurrentPosition() < startingPivotPos + PivotMode.INTAKE.getVal() - 100 && !Thread.currentThread().isInterrupted()) {
 
                         }
 
                         _setLiftMode(LiftMode.TILT);
-                        while (lift.getCurrentPosition() > startingLiftPos + LiftMode.SCORE.getVal() + 75 && !Thread.currentThread().isInterrupted()) {
+                        start = clock.seconds();
+                        while (start + 3 > clock.seconds() && lift.getCurrentPosition() > startingLiftPos + LiftMode.SCORE.getVal() + 75 && !Thread.currentThread().isInterrupted()) {
 
                         }
 
-                        NanoClock clock = NanoClock.system();
-                        double start = clock.seconds();
+                        start = clock.seconds();
                         while (start + .5 > clock.seconds() && !Thread.currentThread().isInterrupted()) {
 
                         }
 
                         _setLiftMode(LiftMode.SCORE);
-                        while (lift.getCurrentPosition() > startingLiftPos + LiftMode.SCORE.getVal() + 75 && !Thread.currentThread().isInterrupted()) {
+                        start = clock.seconds();
+                        while (start + 3 > clock.seconds() && lift.getCurrentPosition() > startingLiftPos + LiftMode.SCORE.getVal() + 75 && !Thread.currentThread().isInterrupted()) {
 
                         }
 
@@ -236,11 +245,13 @@ public class Intake {
                         tilt.setPosition(0);
                         _setPivotMode(PivotMode.INTAKE);
                         _setLiftMode(LiftMode.TILT);
-                        while (lift.getCurrentPosition() < startingLiftPos + LiftMode.TILT.getVal() - 50 && !Thread.currentThread().isInterrupted()) {
+                        start = clock.seconds();
+                        while (start + 3 > clock.seconds() && lift.getCurrentPosition() < startingLiftPos + LiftMode.TILT.getVal() - 50 && !Thread.currentThread().isInterrupted()) {
 
                         }
                         _setLiftMode(LiftMode.DOWN);
-                        while (lift.getCurrentPosition() > startingLiftPos + LiftMode.DOWN.getVal() + 50 && !Thread.currentThread().isInterrupted()) {
+                        start = clock.seconds();
+                        while (start + 3 > clock.seconds() && lift.getCurrentPosition() > startingLiftPos + LiftMode.DOWN.getVal() + 50 && !Thread.currentThread().isInterrupted()) {
 
                         }
                         currentMode = Mode.NONE;
