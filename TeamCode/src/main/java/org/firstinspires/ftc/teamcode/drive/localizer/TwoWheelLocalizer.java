@@ -86,7 +86,7 @@ public class TwoWheelLocalizer extends TwoTrackingWheelLocalizer {
 
         List<Double> wheelPositions = new ArrayList<>();
         wheelPositions.add(encoderTicksToInches(rightBulkData.getMotorCurrentPosition(rightEncoder)));
-        wheelPositions.add(encoderTicksToInches(leftBulkData.getMotorCurrentPosition(frontEncoder)));
+        wheelPositions.add(-encoderTicksToInches(leftBulkData.getMotorCurrentPosition(frontEncoder)));
         return wheelPositions;
     }
 }

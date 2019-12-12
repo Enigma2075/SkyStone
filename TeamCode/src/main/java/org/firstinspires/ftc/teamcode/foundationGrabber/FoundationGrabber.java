@@ -75,7 +75,7 @@ public class FoundationGrabber {
         else {
             if(currentPositionLeft != position) {
                 currentPositionLeft = position;
-                grabberLeft.setPosition(position.getNumVal());
+                grabberLeft.setPosition(position.getNumVal()-.05);
             }
         }
     }

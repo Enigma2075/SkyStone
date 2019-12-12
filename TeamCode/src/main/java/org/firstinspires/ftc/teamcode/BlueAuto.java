@@ -69,7 +69,7 @@ public class BlueAuto extends LinearOpMode {
 
         drive.followTrajectorySync(moveToSeeSkyStone);
 
-        arm.moveToPosition(Arm.Position.HOLD, Arm.Side.LEFT);
+        arm.moveToPosition(Arm.Position.UP, Arm.Side.LEFT);
         arm.setRoller(Arm.RollerMode.OPEN, Arm.Side.RIGHT);
         arm.moveToPosition(Arm.Position.READY, Arm.Side.RIGHT);
 
@@ -155,27 +155,27 @@ public class BlueAuto extends LinearOpMode {
             // Move to third SkyStone
             Trajectory moveToSkyStone3 = drive.trajectoryBuilder()
                     .lineTo(new Vector2d(40, -16), new LinearInterpolator(0, 0))
-                    .lineTo(new Vector2d(SkyStonePosition.BRIDGE.getNumVal()+1, -27.5), new LinearInterpolator(0, 0))
+                    .lineTo(new Vector2d(SkyStonePosition.BRIDGE.getNumVal()+2, -27.5), new LinearInterpolator(0, 0))
                     .build();
             moveToBlock(moveToSkyStone3);
 
-            grabStone(SkyStonePosition.BRIDGE.getNumVal()+1, 2);
-            xStart = SkyStonePosition.BRIDGE.getNumVal()+1;
+            grabStone(SkyStonePosition.BRIDGE.getNumVal()+2, 2);
+            xStart = SkyStonePosition.BRIDGE.getNumVal()+2;
         }
         else if(skyStonePosition == SkyStonePosition.BRIDGE) {
             // Move to third SkyStone
             Trajectory moveToSkyStone3 = drive.trajectoryBuilder()
                     .lineTo(new Vector2d(40, -16), new LinearInterpolator(0, 0))
-                    .lineTo(new Vector2d(SkyStonePosition.CENTER.getNumVal()+1, -27.5), new LinearInterpolator(0, 0))
+                    .lineTo(new Vector2d(SkyStonePosition.CENTER.getNumVal()+2.5, -27.5), new LinearInterpolator(0, 0))
                     .build();
             moveToBlock(moveToSkyStone3);
 
-            grabStone(SkyStonePosition.CENTER.getNumVal()+1, 2);
+            grabStone(SkyStonePosition.CENTER.getNumVal()+2.5, 2);
         }
 
         grabber.moveToPosition(FoundationGrabber.Position.READY, Arm.Side.RIGHT);
 
-        moveToFoundationAndDrop(3, 4);
+        moveToFoundationAndDrop(3, 4, xStart);
 
         grabber.moveToPositionSync(FoundationGrabber.Position.DOWN, Arm.Side.RIGHT);
 
@@ -265,7 +265,7 @@ public class BlueAuto extends LinearOpMode {
         if(xStart != 0) {
             moveToFoundation =
                     drive.trajectoryBuilder()
-                            .lineTo(new Vector2d(xStart, -24), new LinearInterpolator(0, 0))
+                            .lineTo(new Vector2d(xStart, -25), new LinearInterpolator(0, 0))
                             .lineTo(new Vector2d(40, -19), new LinearInterpolator(0, 0))
                             .lineTo(new Vector2d(81 + xOffset, -29 - yOffset), new LinearInterpolator(0, 0))
                             .build();

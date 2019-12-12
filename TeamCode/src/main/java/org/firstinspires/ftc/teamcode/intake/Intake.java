@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.RedAuto;
+import org.firstinspires.ftc.teamcode.arm.Arm;
 import org.firstinspires.ftc.teamcode.drive.Drivetrain;
 import org.firstinspires.ftc.teamcode.sensors.SensorArray;
 import org.openftc.revextensions2.ExpansionHubMotor;
@@ -141,13 +142,19 @@ public class Intake {
         tilt.setPosition(0);
     }
 
-    public void setMode(Mode mode, Drivetrain drive, Telemetry telemetry) {
+    public Mode getCurrentMode() {
+        return currentMode;
+    }
+
+    public void setMode(Mode mode, Drivetrain drive, Arm arm, Telemetry telemetry) {
         NanoClock clock = NanoClock.system();
         double start;
         switch(currentMode) {
             case NONE:
                 switch (mode) {
                     case GRAB_STACK:
+                        arm.moveToPosition(Arm.Position.HOLD, Arm.Side.LEFT);
+                        arm.moveToPosition(Arm.Position.HOLD, Arm.Side.RIGHT);
                         _setPivotMode(PivotMode.INTAKE);
                         _setLiftMode(LiftMode.TILT);
                         tilt.setPosition(1);
@@ -156,6 +163,8 @@ public class Intake {
 
                         }
                         _setLiftMode(LiftMode.GRAB_STACK);
+                        arm.moveToPosition(Arm.Position.UP, Arm.Side.LEFT);
+                        arm.moveToPosition(Arm.Position.UP, Arm.Side.RIGHT);
                         currentMode = mode;
                         break;
                 }
@@ -164,6 +173,8 @@ public class Intake {
                 switch (mode) {
                     case GRAB_STACK:
                         tilt.setPosition(0);
+                        arm.moveToPosition(Arm.Position.HOLD, Arm.Side.LEFT);
+                        arm.moveToPosition(Arm.Position.HOLD, Arm.Side.RIGHT);
                         _setPivotMode(PivotMode.INTAKE);
                         _setLiftMode(LiftMode.TILT);
                         start = clock.seconds();
@@ -175,9 +186,13 @@ public class Intake {
                         while (start + 3 > clock.seconds() && lift.getCurrentPosition() > startingLiftPos + LiftMode.DOWN.getVal() + 50 && !Thread.currentThread().isInterrupted()) {
 
                         }
+                        arm.moveToPosition(Arm.Position.UP, Arm.Side.LEFT);
+                        arm.moveToPosition(Arm.Position.UP, Arm.Side.RIGHT);
                         currentMode = Mode.NONE;
                         break;
                     case SCORE:
+                        arm.moveToPosition(Arm.Position.HOLD, Arm.Side.LEFT);
+                        arm.moveToPosition(Arm.Position.HOLD, Arm.Side.RIGHT);
                         drive.setDrivePower(new Pose2d(-.2, 0, 0));
                         tilt.setPosition(1);
                         _setLiftMode(LiftMode.UP);
@@ -202,6 +217,8 @@ public class Intake {
                 switch (mode) {
                     case SCORE:
                         drive.setDrivePower(new Pose2d(-.2, 0, 0));
+                        arm.moveToPosition(Arm.Position.HOLD, Arm.Side.LEFT);
+                        arm.moveToPosition(Arm.Position.HOLD, Arm.Side.RIGHT);
                         _setPivotMode(PivotMode.INTAKE);
                         start = clock.seconds();
                         while (start + 3 > clock.seconds() && pivot.getCurrentPosition() < startingPivotPos + PivotMode.INTAKE.getVal() - 100 && !Thread.currentThread().isInterrupted()) {
@@ -231,6 +248,9 @@ public class Intake {
                         //        .build();
                         //drive.followTrajectorySync(moveToCenterSkyStone);
 
+                        arm.moveToPosition(Arm.Position.UP, Arm.Side.LEFT);
+                        arm.moveToPosition(Arm.Position.UP, Arm.Side.RIGHT);
+
                         currentMode = Mode.PLACE;
                         break;
                 }
@@ -238,24 +258,29 @@ public class Intake {
             case PLACE:
                 switch (mode) {
                     case SCORE:
+                        arm.moveToPosition(Arm.Position.HOLD, Arm.Side.LEFT);
+                        arm.moveToPosition(Arm.Position.HOLD, Arm.Side.RIGHT);
+
                         _setLiftMode(LiftMode.DOWN);
+                        arm.moveToPosition(Arm.Position.UP, Arm.Side.LEFT);
+                        arm.moveToPosition(Arm.Position.UP, Arm.Side.RIGHT);
                         currentMode = Mode.GRAB_STACK;
                         break;
-                    case GRAB_STACK:
-                        tilt.setPosition(0);
-                        _setPivotMode(PivotMode.INTAKE);
-                        _setLiftMode(LiftMode.TILT);
-                        start = clock.seconds();
-                        while (start + 3 > clock.seconds() && lift.getCurrentPosition() < startingLiftPos + LiftMode.TILT.getVal() - 50 && !Thread.currentThread().isInterrupted()) {
+//                    case GRAB_STACK:
+//                        tilt.setPosition(0);
+//                        _setPivotMode(PivotMode.INTAKE);
+//                        _setLiftMode(LiftMode.TILT);
+//                        start = clock.seconds();
+//                        while (start + 3 > clock.seconds() && lift.getCurrentPosition() < startingLiftPos + LiftMode.TILT.getVal() - 50 && !Thread.currentThread().isInterrupted()) {
 
-                        }
-                        _setLiftMode(LiftMode.DOWN);
-                        start = clock.seconds();
-                        while (start + 3 > clock.seconds() && lift.getCurrentPosition() > startingLiftPos + LiftMode.DOWN.getVal() + 50 && !Thread.currentThread().isInterrupted()) {
+//                        }
+//                        _setLiftMode(LiftMode.DOWN);
+//                        start = clock.seconds();
+//                        while (start + 3 > clock.seconds() && lift.getCurrentPosition() > startingLiftPos + LiftMode.DOWN.getVal() + 50 && !Thread.currentThread().isInterrupted()) {
 
-                        }
-                        currentMode = Mode.NONE;
-                        break;
+//                        }
+//                        currentMode = Mode.NONE;
+//                        break;
                 }
         }
     }

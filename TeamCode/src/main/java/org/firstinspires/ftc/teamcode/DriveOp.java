@@ -15,8 +15,8 @@ public class DriveOp extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Robot robot = new Robot(hardwareMap, telemetry);
 
-        robot.arm.moveToPosition(Arm.Position.HOLD, Arm.Side.RIGHT);
-        robot.arm.moveToPosition(Arm.Position.HOLD, Arm.Side.LEFT);
+        robot.arm.moveToPosition(Arm.Position.UP, Arm.Side.RIGHT);
+        robot.arm.moveToPosition(Arm.Position.UP, Arm.Side.LEFT);
 
         //robot.drivetrain.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -89,8 +89,8 @@ public class DriveOp extends LinearOpMode {
             if(gamepad1.y) {
                 if(!arms) {
                     arms = true;
-                    robot.arm.moveToPosition(Arm.Position.HOLD, Arm.Side.LEFT);
-                    robot.arm.moveToPosition(Arm.Position.HOLD, Arm.Side.RIGHT);
+                    robot.arm.moveToPosition(Arm.Position.UP, Arm.Side.LEFT);
+                    robot.arm.moveToPosition(Arm.Position.UP, Arm.Side.RIGHT);
                     robot.arm.setRoller(Arm.RollerMode.CLOSE, Arm.Side.RIGHT);
                     robot.arm.setRoller(Arm.RollerMode.CLOSE, Arm.Side.LEFT);
                 }
@@ -105,8 +105,8 @@ public class DriveOp extends LinearOpMode {
             else {
                 if(arms) {
                     arms = false;
-                    robot.arm.moveToPosition(Arm.Position.HOLD, Arm.Side.LEFT);
-                    robot.arm.moveToPosition(Arm.Position.HOLD, Arm.Side.RIGHT);
+                    robot.arm.moveToPosition(Arm.Position.UP, Arm.Side.LEFT);
+                    robot.arm.moveToPosition(Arm.Position.UP, Arm.Side.RIGHT);
                     robot.arm.setRoller(Arm.RollerMode.CLOSE, Arm.Side.RIGHT);
                     robot.arm.setRoller(Arm.RollerMode.CLOSE, Arm.Side.LEFT);
                 }
@@ -121,7 +121,7 @@ public class DriveOp extends LinearOpMode {
 
             if(gamepad2.y) {
                 if(!grabStackPressed) {
-                    robot.intake.setMode(Intake.Mode.GRAB_STACK, robot.drivetrain, telemetry);
+                    robot.intake.setMode(Intake.Mode.GRAB_STACK, robot.drivetrain, robot.arm, telemetry);
                     grabStackPressed = true;
                 }
             }
@@ -131,7 +131,7 @@ public class DriveOp extends LinearOpMode {
 
             if(gamepad2.a) {
                 if(!scorePressed) {
-                    robot.intake.setMode(Intake.Mode.SCORE, robot.drivetrain, telemetry);
+                    robot.intake.setMode(Intake.Mode.SCORE, robot.drivetrain, robot.arm, telemetry);
                     scorePressed = true;
                 }
             }
