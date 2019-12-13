@@ -97,7 +97,7 @@ public class RedAuto extends LinearOpMode {
             else {
                 // We didn't find the SkyStone so we move to the right stone.
                 Trajectory moveToRightSkyStone = drive.trajectoryBuilder()
-                        .lineTo(new Vector2d( SkyStonePosition.BRIDGE.getNumVal(),25 ), new ConstantInterpolator(0))
+                        .lineTo(new Vector2d( SkyStonePosition.BRIDGE.getNumVal(),26 ), new ConstantInterpolator(0))
                         .build();
                 drive.followTrajectorySync(moveToRightSkyStone);
 
@@ -108,7 +108,7 @@ public class RedAuto extends LinearOpMode {
         // Disable Tracking when we are done;
         vision.deactivate();
 
-        grabStone(skyStonePosition.getNumVal() + 1, yOffset);
+        grabStone(skyStonePosition.getNumVal() + 2, yOffset);
 
         // Move to Foundation and drop
         moveToFoundationAndDrop(18);
@@ -117,7 +117,7 @@ public class RedAuto extends LinearOpMode {
             // Move to second SkyStone
             Trajectory moveToSkyStone2 = drive.trajectoryBuilder()
                     .lineTo(new Vector2d(40, 20), new LinearInterpolator(0, 0))
-                    .lineTo(new Vector2d(-22, 25), new LinearInterpolator(0, 0))
+                    .lineTo(new Vector2d(-22, 26), new LinearInterpolator(0, 0))
                     .build();
             moveToBlock(moveToSkyStone2);
 
@@ -127,7 +127,7 @@ public class RedAuto extends LinearOpMode {
             // Move to second SkyStone
             Trajectory moveToSkyStone2 = drive.trajectoryBuilder()
                     .lineTo(new Vector2d(40, 20), new LinearInterpolator(0, 0))
-                    .lineTo(new Vector2d(-14, 25), new LinearInterpolator(0, 0))
+                    .lineTo(new Vector2d(-14, 26), new LinearInterpolator(0, 0))
                     .build();
             moveToBlock(moveToSkyStone2);
 
@@ -137,7 +137,7 @@ public class RedAuto extends LinearOpMode {
             // Move to second SkyStone
             Trajectory moveToSkyStone2 = drive.trajectoryBuilder()
                     .lineTo(new Vector2d(40, 20), new LinearInterpolator(0, 0))
-                    .lineTo(new Vector2d(-7, 25), new LinearInterpolator(0, 0))
+                    .lineTo(new Vector2d(-7, 26), new LinearInterpolator(0, 0))
                     .build();
             moveToBlock(moveToSkyStone2);
 
@@ -152,7 +152,7 @@ public class RedAuto extends LinearOpMode {
             // Move to third SkyStone
             Trajectory moveToSkyStone3 = drive.trajectoryBuilder()
                     .lineTo(new Vector2d(40, 20), new LinearInterpolator(0, 0))
-                    .lineTo(new Vector2d(SkyStonePosition.BRIDGE.getNumVal()+1, 25), new LinearInterpolator(0, 0))
+                    .lineTo(new Vector2d(SkyStonePosition.BRIDGE.getNumVal()+1, 26), new LinearInterpolator(0, 0))
                     .build();
             moveToBlock(moveToSkyStone3);
 
@@ -164,11 +164,11 @@ public class RedAuto extends LinearOpMode {
             // Move to third SkyStone
             Trajectory moveToSkyStone3 = drive.trajectoryBuilder()
                     .lineTo(new Vector2d(40, 20), new LinearInterpolator(0, 0))
-                    .lineTo(new Vector2d(SkyStonePosition.CENTER.getNumVal()+1, 25), new LinearInterpolator(0, 0))
+                    .lineTo(new Vector2d(SkyStonePosition.CENTER.getNumVal()+1, 26), new LinearInterpolator(0, 0))
                     .build();
             moveToBlock(moveToSkyStone3);
 
-            grabStone(SkyStonePosition.CENTER.getNumVal()+2, 2);
+            grabStone(SkyStonePosition.CENTER.getNumVal()+2, .5);
 
             xStart = 0;
         }
@@ -263,14 +263,14 @@ public class RedAuto extends LinearOpMode {
     private void moveToFoundationAndDrop(double xOffset, double yOffset, double xStart) {
         Trajectory moveToFoundation = drive.trajectoryBuilder()
                 .lineTo(new Vector2d(40, 18), new LinearInterpolator(0, 0))
-                .lineTo(new Vector2d(80.5 + xOffset, 29 + yOffset), new LinearInterpolator(0, 0))
+                .lineTo(new Vector2d(80.5 + xOffset, 31 + yOffset), new LinearInterpolator(0, 0))
                 .build();
 
         if(xStart != 0) {
             moveToFoundation = drive.trajectoryBuilder()
-                    .lineTo(new Vector2d(xStart, 18), new LinearInterpolator(0, 0))
+                    .lineTo(new Vector2d(xStart, 22), new LinearInterpolator(0, 0))
                     .lineTo(new Vector2d(40, 18), new LinearInterpolator(0, 0))
-                    .lineTo(new Vector2d(80.5 + xOffset, 29 + yOffset), new LinearInterpolator(0, 0))
+                    .lineTo(new Vector2d(80.5 + xOffset, 31 + yOffset), new LinearInterpolator(0, 0))
                     .build();
         }
 
