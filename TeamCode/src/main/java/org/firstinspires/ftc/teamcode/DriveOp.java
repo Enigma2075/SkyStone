@@ -34,7 +34,7 @@ public class DriveOp extends LinearOpMode {
         boolean scorePressed = false;
 
         robot.intake.setIntakeMode(Intake.IntakeMode.OUTTAKE);
-        sleep(200);
+        sleep(400);
         robot.intake.setPivotMode(Intake.PivotMode.INTAKE);
         robot.intake.setIntakeMode(Intake.IntakeMode.IDLE);
 
@@ -70,8 +70,8 @@ public class DriveOp extends LinearOpMode {
             }
             else {
                 robot.drivetrain.setDrivePower(new Pose2d(
-                        Math.signum(x) * (Math.abs(x)) * .7,
-                        Math.signum(y) * (Math.abs(y)) * .7,
+                        Math.signum(x) * (Math.abs(x)) * .75,
+                        Math.signum(y) * (Math.abs(y)) * .75,
                         Math.signum(r) * (Math.abs(r)) * .7
                 ));
             }

@@ -58,7 +58,7 @@ public class FoundationGrabber {
         switch (position) {
             case UP:
             case DOWN:
-                timeout = 1.25;
+                timeout = 1.5;
                 break;
         }
         while (!Thread.currentThread().isInterrupted() && clock.seconds() - start < timeout) {
