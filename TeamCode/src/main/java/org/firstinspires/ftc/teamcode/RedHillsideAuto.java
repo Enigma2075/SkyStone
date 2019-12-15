@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.path.heading.ConstantInterpolator;
 import com.acmerobotics.roadrunner.path.heading.LinearInterpolator;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.arm.Arm;
@@ -19,6 +20,7 @@ import org.firstinspires.ftc.teamcode.vision.Vision;
  */
 @Config
 @Autonomous(group = "drive")
+@Disabled
 public class RedHillsideAuto extends LinearOpMode {
     Robot robot = null;
     Drivetrain drive = null;

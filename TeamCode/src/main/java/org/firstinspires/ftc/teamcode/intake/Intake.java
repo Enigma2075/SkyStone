@@ -52,13 +52,14 @@ public class Intake {
         HOLD,
         PLACE,
         GRAB_STACK,
-        SCORE
+        SCORE,
+        PASSTHROUGH
     }
 
     public enum PivotMode {
         INTAKE(490),
         //MOVE_LIFT(490),
-        HOLD(0),
+        HOLD(-20),
         PLACE(-390);
 
         private int val;
@@ -149,6 +150,47 @@ public class Intake {
     public void setMode(Mode mode, Drivetrain drive, Arm arm, Telemetry telemetry) {
         NanoClock clock = NanoClock.system();
         double start;
+
+        if(mode == Mode.PASSTHROUGH) {
+            if(currentMode != Mode.PASSTHROUGH) {
+                arm.moveToPosition(Arm.Position.HOLD, Arm.Side.LEFT);
+                arm.moveToPosition(Arm.Position.HOLD, Arm.Side.RIGHT);
+                tilt.setPosition(1);
+                _setLiftMode(LiftMode.UP);
+                start = clock.seconds();
+                while (start + 3 > clock.seconds() && lift.getCurrentPosition() < startingLiftPos + LiftMode.UP.getVal() - 50 && !Thread.currentThread().isInterrupted()) {
+                }
+                _setPivotMode(PivotMode.PLACE);
+                start = clock.seconds();
+                while (start + 3 > clock.seconds() && pivot.getCurrentPosition() > startingPivotPos + PivotMode.PLACE.getVal() + 50 && !Thread.currentThread().isInterrupted()) {
+                }
+                _setIntakeMode(IntakeMode.PLACE);
+                start = clock.seconds();
+                while (start + 2.0 > clock.seconds() && !Thread.currentThread().isInterrupted()) {
+
+                }
+                currentMode = Mode.PASSTHROUGH;
+            }
+            else {
+                tilt.setPosition(0);
+                _setIntakeMode(IntakeMode.PLACE);
+
+                _setPivotMode(PivotMode.INTAKE);
+                start = clock.seconds();
+                while (start + 3 > clock.seconds() && pivot.getCurrentPosition() < startingPivotPos + PivotMode.INTAKE.getVal() + 50 && !Thread.currentThread().isInterrupted()) {
+                }
+
+                _setLiftMode(LiftMode.DOWN);
+                start = clock.seconds();
+
+                arm.moveToPosition(Arm.Position.UP, Arm.Side.LEFT);
+                arm.moveToPosition(Arm.Position.UP, Arm.Side.RIGHT);
+
+                currentMode = Mode.NONE;
+            }
+            return;
+        }
+
         switch(currentMode) {
             case NONE:
                 switch (mode) {

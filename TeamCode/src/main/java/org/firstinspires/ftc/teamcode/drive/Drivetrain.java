@@ -64,8 +64,8 @@ public class Drivetrain extends MecanumDrive {
     private List<ExpansionHubMotor> motors;
     private BNO055IMU imu;
 
-    public static PIDCoefficients X_PID = new PIDCoefficients(1.5, 0, 0);
-    public static PIDCoefficients Y_PID = new PIDCoefficients(2.5, .02, 0);
+    public static PIDCoefficients X_PID = new PIDCoefficients(2.5, 0, 0);
+    public static PIDCoefficients Y_PID = new PIDCoefficients(2.5, .03, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(5, 0, 0);
     public static PIDCoefficients TURN_PID = new PIDCoefficients(.002, 0, 0);
 

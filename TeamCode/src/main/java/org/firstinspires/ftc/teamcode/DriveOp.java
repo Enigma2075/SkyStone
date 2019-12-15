@@ -32,6 +32,7 @@ public class DriveOp extends LinearOpMode {
         boolean arms = false;
         boolean grabStackPressed = false;
         boolean scorePressed = false;
+        boolean passthroughPressed = false;
 
         robot.intake.setIntakeMode(Intake.IntakeMode.OUTTAKE);
         sleep(400);
@@ -118,6 +119,16 @@ public class DriveOp extends LinearOpMode {
             //else {
             //    robot.intake.setPivotMode(Intake.PivotMode.HOLD);
             //}
+
+            if(gamepad2.x) {
+                if(!passthroughPressed) {
+                    passthroughPressed = true;
+                    robot.intake.setMode(Intake.Mode.PASSTHROUGH, robot.drivetrain, robot.arm, telemetry);
+                }
+            }
+            else {
+                passthroughPressed = false;
+            }
 
             if(gamepad2.y) {
                 if(!grabStackPressed) {
